@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+  --font-display: 'Bebas Neue', system-ui, sans-serif;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .font-display {
+    font-family: 'Bebas Neue', system-ui, sans-serif;
+  }
+
+  .text-gradient-miami {
+    background: linear-gradient(135deg, #ff2d7a 0%, #ff7043 50%, #00d4ab 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .neon-glow {
+    text-shadow: 0 0 10px #ff2d7a, 0 0 20px #ff2d7a, 0 0 40px #ff2d7a;
+  }
+
+  .neon-glow-teal {
+    text-shadow: 0 0 10px #00d4ab, 0 0 20px #00d4ab, 0 0 40px #00d4ab;
+  }
+}
