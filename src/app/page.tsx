@@ -107,7 +107,7 @@ export default function Home() {
 
     // Reset textarea height
     if (textareaRef.current) {
-      textareaRef.current.style.height = "56px";
+      textareaRef.current.style.height = "46px";
     }
 
     try {
@@ -207,7 +207,7 @@ export default function Home() {
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
     // Auto-resize textarea
-    e.target.style.height = "56px";
+    e.target.style.height = "46px";
     e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
   };
 
@@ -316,7 +316,7 @@ export default function Home() {
           </div>
 
           {/* Input area - fixed at bottom */}
-          <div className="sticky bottom-0 pb-6 pt-4 bg-gradient-to-t from-[#212121] via-[#212121] to-transparent">
+          <div className="sticky bottom-0 pb-3 pt-2 bg-gradient-to-t from-[#212121] via-[#212121] to-transparent">
             <form onSubmit={handleSubmit}>
               <div className="relative bg-[#2f2f2f] rounded-2xl border border-[#424242] shadow-xl">
                 <textarea
@@ -332,8 +332,8 @@ export default function Home() {
                   placeholder="Message AskMikeAI..."
                   rows={1}
                   disabled={isLoading}
-                  className="w-full px-4 py-4 pr-12 bg-transparent text-white placeholder-gray-400 focus:outline-none resize-none text-base disabled:opacity-50"
-                  style={{ minHeight: "56px", maxHeight: "200px" }}
+                  className="w-full px-4 py-3 pr-12 bg-transparent text-white placeholder-gray-400 focus:outline-none resize-none text-base disabled:opacity-50"
+                  style={{ minHeight: "46px", maxHeight: "200px" }}
                 />
                 <button
                   type="submit"
@@ -357,7 +357,7 @@ export default function Home() {
                 </button>
               </div>
             </form>
-            <p className="text-center text-xs text-gray-500 mt-3">
+            <p className="text-center text-xs text-gray-500 mt-2">
               AskMikeAI can make mistakes. For important decisions, please{" "}
               <Link href="/contact" className="text-gray-400 hover:text-white underline">
                 contact us directly
