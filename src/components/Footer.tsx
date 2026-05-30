@@ -71,7 +71,7 @@ export default function Footer() {
                   +1 (754) 295-9900
                 </a>
               </li>
-              <li className="text-sm">1420 NE Miami PL, Miami, FL 33132</li>
+              <li className="text-sm">Miami, FL</li>
             </ul>
             <div className="mt-6 flex space-x-4">
               <a href="https://x.com/askmikeai" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition-colors">

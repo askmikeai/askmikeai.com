@@ -275,8 +275,7 @@ export default function ContactPage() {
                   </div>
                   <div className="ml-4">
                     <h3 className="text-lg font-semibold text-gray-900">Location</h3>
-                    <p className="mt-1 text-gray-600">1420 NE Miami PL</p>
-                    <p className="text-gray-600">Miami, FL 33132</p>
+                    <p className="mt-1 text-gray-600">Miami, FL</p>
                   </div>
                 </div>
 
