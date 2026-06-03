@@ -3,9 +3,9 @@ import Link from "next/link";
 import { getAllBlogPosts } from "@/data/blog-posts";
 
 export const metadata: Metadata = {
-  title: "Blog - AskMikeAI",
+  title: "Writing - AskMikeAI",
   description:
-    "Insights, tutorials, and updates from the AskMikeAI team on artificial intelligence, machine learning, and business transformation.",
+    "Mike writes about what he's building, breaking, and learning in AI — in public, one post at a time.",
 };
 
 const gradients = [
@@ -26,13 +26,13 @@ export default function BlogPage() {
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-teal-400 font-semibold tracking-wide uppercase mb-4">Insights & Updates</p>
+            <p className="text-teal-400 font-semibold tracking-wide uppercase mb-4">Building in public</p>
             <h1 className="text-5xl font-display tracking-wide text-white sm:text-6xl">
-              BLOG
+              WRITING
             </h1>
             <p className="mt-6 text-xl text-gray-300">
-              Insights, tutorials, and updates on AI, machine learning, and business
-              transformation from our team of experts.
+              Notes on what I&apos;m building, what&apos;s breaking, and what I&apos;m starting to
+              figure out in AI — thinking out loud, in public.
             </p>
           </div>
         </div>

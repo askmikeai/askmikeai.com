@@ -7,10 +7,10 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AskMikeAI - AI Consulting & Services",
+  title: "AskMikeAI - Builder, Educator & AI Community",
   description:
-    "Expert AI consulting services to help your business leverage artificial intelligence. Strategy, implementation, and training from industry experts.",
-  keywords: ["AI consulting", "artificial intelligence", "machine learning", "business AI", "AI strategy"],
+    "Mike builds AI-powered software that solves real problems. Describe your pain point, name your price, and back the build.",
+  keywords: ["AI builder", "AI educator", "build in public", "AI software", "name your price"],
 };
 
 export default function RootLayout({

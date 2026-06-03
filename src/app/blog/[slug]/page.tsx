@@ -196,16 +196,16 @@ export default async function BlogPostPage({ params }: Props) {
 
         <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-display tracking-wide text-white">
-            WANT TO LEARN MORE ABOUT AI?
+            GOT A PROBLEM WORTH SOLVING?
           </h2>
           <p className="mt-4 text-lg text-teal-100 max-w-2xl mx-auto">
-            Let&apos;s discuss how AI can transform your business.
+            Describe your pain point and name what fixing it is worth. If it resonates, I&apos;ll build it.
           </p>
           <Link
-            href="/contact"
+            href="/"
             className="mt-8 inline-block rounded-full bg-white px-10 py-4 text-lg font-semibold text-teal-700 shadow-xl hover:bg-gray-100 hover:scale-105 transition-all"
           >
-            Get in Touch
+            Back the Build
           </Link>
         </div>
       </section>

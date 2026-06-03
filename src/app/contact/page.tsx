@@ -80,8 +80,8 @@ export default function ContactPage() {
               GET IN TOUCH
             </h1>
             <p className="mt-6 text-xl text-pink-100">
-              Have a question or ready to start your AI journey? We&apos;d love to hear from you.
-              Drop us a line and we&apos;ll get back to you faster than a Miami sunset.
+              Got a pain point, an idea, or just want to talk shop? Drop me a line and I&apos;ll get
+              back to you faster than a Miami sunset.
             </p>
           </div>
         </div>
@@ -312,28 +312,29 @@ export default function ContactPage() {
                 <div className="mt-6 space-y-6">
                   <div>
                     <h4 className="font-semibold text-gray-900">
-                      How long does a typical project take?
+                      How does the &ldquo;name your price&rdquo; thing work?
                     </h4>
                     <p className="mt-1 text-sm text-gray-600">
-                      Project timelines vary based on scope. Strategy engagements can be
-                      completed in weeks, while full implementations may take several months.
+                      You describe your pain point and set what a monthly fix is worth to you. I build
+                      and own the software; you license it at the price you set.
                     </p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">
-                      Do you work with small businesses?
+                      Are you a consultant?
                     </h4>
                     <p className="mt-1 text-sm text-gray-600">
-                      Yes! We work with businesses of all sizes, from startups to enterprises.
+                      No. I&apos;m a builder, educator, and member of the AI community. I ship software
+                      that solves real problems — I don&apos;t sell strategy by the hour.
                     </p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">
-                      What industries do you serve?
+                      What if my problem is too niche?
                     </h4>
                     <p className="mt-1 text-sm text-gray-600">
-                      We have experience across many industries including healthcare, finance,
-                      retail, manufacturing, and technology.
+                      Niche is good. The best tools start from one specific, nagging problem. Tell me
+                      yours — if it resonates, I&apos;ll build it.
                     </p>
                   </div>
                 </div>
@@ -347,12 +348,12 @@ export default function ContactPage() {
       <section className="py-16 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-teal-600 font-semibold tracking-wide uppercase">Book a Meeting</p>
+            <p className="text-teal-600 font-semibold tracking-wide uppercase">Book a Call</p>
             <h2 className="mt-2 text-3xl font-display tracking-wide text-gray-900 sm:text-4xl">
-              SCHEDULE A FREE CONSULTATION
+              GRAB 30 MINUTES WITH MIKE
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Prefer to talk? Book a 30-minute call to discuss your AI needs.
+              Prefer to talk it through? Book a 30-minute Zoom and tell me about your pain point.
             </p>
           </div>
 

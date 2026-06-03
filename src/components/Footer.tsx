@@ -23,8 +23,8 @@ export default function Footer() {
               </div>
             </Link>
             <p className="mt-4 text-gray-300 max-w-md">
-              Empowering businesses with cutting-edge AI solutions. We help you navigate
-              the future of artificial intelligence and transform your operations.
+              Builder, educator, and member of the AI community. I make software that solves real
+              problems — and I let the people with the problem decide what it&apos;s worth.
             </p>
             <div className="mt-6 flex items-center gap-2">
               <span className="inline-block w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
@@ -37,17 +37,17 @@ export default function Footer() {
             <ul className="mt-4 space-y-2">
               <li>
                 <Link href="/about" className="text-gray-300 hover:text-teal-400 transition-colors">
-                  About Us
+                  About Mike
                 </Link>
               </li>
               <li>
                 <Link href="/services" className="text-gray-300 hover:text-teal-400 transition-colors">
-                  Services
+                  What I Build
                 </Link>
               </li>
               <li>
                 <Link href="/blog" className="text-gray-300 hover:text-teal-400 transition-colors">
-                  Blog
+                  Writing
                 </Link>
               </li>
               <li>
