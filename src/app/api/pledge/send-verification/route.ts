@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getStripe, getBaseUrl } from "@/lib/stripe";
 import { signPledgeToken } from "@/lib/pledge";
+import { recordPledge } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,6 +28,10 @@ export async function POST(request: NextRequest) {
 
     const amount = Number(session.metadata?.pledgedMonthly || 0);
     const painPoint = session.metadata?.painPoint || "";
+
+    // Collect the pledge (price paid + the problem) in the database. Best-effort.
+    await recordPledge({ email, amount, painPoint, stripeSessionId: sessionId });
+
     const token = signPledgeToken({ email, amount, painPoint });
     const verifyUrl = `${getBaseUrl()}/pledge/verify?token=${encodeURIComponent(token)}`;
 

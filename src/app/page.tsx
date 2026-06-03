@@ -236,7 +236,12 @@ export default function Home() {
   };
 
   const hasMessages = messages.length > 0;
-  const pledgePct = ((pledge - PLEDGE_MIN) / (PLEDGE_MAX - PLEDGE_MIN)) * 100;
+  const clampPledge = (v: number) =>
+    Math.min(PLEDGE_MAX, Math.max(PLEDGE_MIN, Math.round(v)));
+  const pledgePct = Math.min(
+    100,
+    Math.max(0, ((pledge - PLEDGE_MIN) / (PLEDGE_MAX - PLEDGE_MIN)) * 100)
+  );
 
   return (
     <div>
@@ -382,32 +387,56 @@ export default function Home() {
                 <label htmlFor="pledge" className="text-sm font-medium text-gray-300">
                   What&apos;s solving it worth, each month?
                 </label>
-                <div className="text-right">
-                  <span className="text-2xl font-display tracking-wide text-white">${pledge}</span>
+                <div className="flex items-baseline gap-0.5">
+                  <span className="text-3xl font-display tracking-wide text-white">$</span>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    value={pledge}
+                    min={PLEDGE_MIN}
+                    max={PLEDGE_MAX}
+                    onChange={(e) =>
+                      setPledge(e.target.value === "" ? PLEDGE_MIN : Number(e.target.value))
+                    }
+                    onBlur={(e) =>
+                      setPledge(clampPledge(Number(e.target.value) || PLEDGE_DEFAULT))
+                    }
+                    aria-label="Set your monthly price"
+                    className="w-[3.2ch] bg-transparent text-3xl font-display tracking-wide text-white focus:outline-none rounded-md [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  />
                   <span className="text-gray-400 text-sm">/mo</span>
                 </div>
               </div>
 
               {/* Money bar */}
-              <div className="mt-3 relative">
-                <div className="h-2.5 rounded-full bg-[#424242] overflow-hidden">
+              <div className="mt-4">
+                <div className="relative h-11 flex items-center">
+                  <div className="h-4 w-full rounded-full bg-[#424242] overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-teal-500 via-pink-500 to-coral-500"
+                      style={{ width: `${pledgePct}%` }}
+                    ></div>
+                  </div>
+                  {/* Draggable handle: white circle with a $ riding the end of the fill */}
                   <div
-                    className="h-full bg-gradient-to-r from-teal-500 via-pink-500 to-coral-500 transition-all"
-                    style={{ width: `${pledgePct}%` }}
-                  ></div>
+                    className="pointer-events-none absolute top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg ring-1 ring-black/10"
+                    style={{ left: `${pledgePct}%` }}
+                  >
+                    <span className="text-lg font-bold text-pink-600">$</span>
+                  </div>
+                  <input
+                    id="pledge"
+                    type="range"
+                    min={PLEDGE_MIN}
+                    max={PLEDGE_MAX}
+                    step={1}
+                    value={Math.min(PLEDGE_MAX, Math.max(PLEDGE_MIN, pledge))}
+                    onChange={(e) => setPledge(Number(e.target.value))}
+                    className="absolute inset-0 h-11 w-full cursor-pointer opacity-0"
+                    aria-label="Monthly pledge amount"
+                  />
                 </div>
-                <input
-                  id="pledge"
-                  type="range"
-                  min={PLEDGE_MIN}
-                  max={PLEDGE_MAX}
-                  step={1}
-                  value={pledge}
-                  onChange={(e) => setPledge(Number(e.target.value))}
-                  className="absolute inset-0 w-full h-2.5 opacity-0 cursor-pointer"
-                  aria-label="Monthly pledge amount"
-                />
-                <div className="mt-1 flex justify-between text-xs text-gray-500">
+                <div className="mt-1.5 flex justify-between text-xs text-gray-500">
                   <span>${PLEDGE_MIN}</span>
                   <span>${PLEDGE_MAX}/mo</span>
                 </div>
