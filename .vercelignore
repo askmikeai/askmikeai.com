@@ -1,0 +1,2 @@
+# Keep local-only internal tools out of any deploy (incl. `vercel` CLI uploads).
+src/app/dashboard

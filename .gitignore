@@ -35,6 +35,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local-only internal tools (run with `npm run dev`, never deployed)
+/src/app/dashboard
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
