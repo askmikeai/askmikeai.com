@@ -51,6 +51,43 @@ export interface PledgeRecord {
   cost?: string | null;
 }
 
+export interface PledgeRow {
+  id: number;
+  created_at: string;
+  email: string | null;
+  amount_monthly: number;
+  pain_point: string | null;
+  name: string | null;
+  company: string | null;
+  role: string | null;
+  frequency: string | null;
+  cost: string | null;
+}
+
+/** Is a database configured at all? (used by the dashboard for messaging) */
+export function isDbConfigured(): boolean {
+  return getDsn() !== null;
+}
+
+/** Read all pledges, newest first. Returns [] if the DB isn't configured. */
+export async function listPledges(): Promise<PledgeRow[]> {
+  const sql = getDb();
+  if (!sql) return [];
+  try {
+    await ensurePledgeTable(sql);
+    const rows = await sql`
+      SELECT id, created_at, email, amount_monthly, pain_point,
+             name, company, role, frequency, cost
+      FROM pledges
+      ORDER BY created_at DESC
+    `;
+    return rows as unknown as PledgeRow[];
+  } catch (error) {
+    console.error("listPledges failed:", error);
+    return [];
+  }
+}
+
 /**
  * Persist a completed pledge (price paid + the problem). Best-effort: if the
  * database isn't configured or the write fails, we log and return false rather
