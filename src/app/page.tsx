@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 
 interface Message {
@@ -74,7 +75,7 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Pledge state
@@ -85,7 +86,9 @@ export default function Home() {
   const [profile, setProfile] = useState<Record<string, string>>({});
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Scroll only the messages box — not the whole page.
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   };
 
   useEffect(() => {
@@ -217,7 +220,9 @@ export default function Home() {
     e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
   };
 
-  const handlePledge = async () => {
+  const router = useRouter();
+
+  const handlePledge = () => {
     if (pledging || !profileComplete) return;
     setPledging(true);
     setPledgeError(null);
@@ -229,19 +234,16 @@ export default function Home() {
       .join(" — ");
     const painPoint = profile.problem || [fromChat, prompt.trim()].filter(Boolean).join(" — ");
 
+    // Hand off to the /back form (don't go straight to Stripe). It prefills
+    // from this draft and is where checkout actually starts.
     try {
-      const res = await fetch("/api/pledge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: pledge, painPoint, profile }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.url) {
-        throw new Error(data.error || "Could not start the pledge.");
-      }
-      window.location.href = data.url;
-    } catch (err) {
-      setPledgeError(err instanceof Error ? err.message : "Something went wrong.");
+      sessionStorage.setItem(
+        "pledgeDraft",
+        JSON.stringify({ amount: pledge, painPoint, profile })
+      );
+      router.push("/back");
+    } catch {
+      setPledgeError("Could not continue. Please try again.");
       setPledging(false);
     }
   };
@@ -275,16 +277,15 @@ export default function Home() {
             </h1>
           </div>
 
-          <div className="flex-1 min-h-0 overflow-y-auto py-4">
+          <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto py-4">
             {!hasMessages ? (
               <div className="flex flex-col items-center justify-center pt-2 text-center">
-                <p className="text-base sm:text-lg text-gray-400 text-center max-w-xl">
-                  I&apos;m Mike. I build software for a living — and my next product won&apos;t come from a
-                  boardroom. It&apos;ll come from a real problem that&apos;s genuinely costing someone time,
-                  money, or sleep. Tell me what that is for you. If it resonates, I&apos;ll build it.
+                <p className="text-sm sm:text-base text-gray-400 text-center max-w-xl">
+                  I&apos;m Mike. I build software that fixes real problems — the kind costing you time,
+                  money, or sleep. Tell me yours. If it resonates, I&apos;ll build it.
                 </p>
 
-                <div className="flex flex-wrap justify-center gap-2 max-w-xl mt-8">
+                <div className="flex flex-wrap justify-center gap-1.5 max-w-xl mt-5">
                   {[
                     "I waste hours every week on…",
                     "There's no good tool for…",
@@ -297,7 +298,7 @@ export default function Home() {
                         setPrompt(label + " ");
                         textareaRef.current?.focus();
                       }}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2f2f2f] text-gray-300 text-sm border border-[#424242] hover:bg-[#3f3f3f] transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2f2f2f] text-gray-300 text-xs border border-[#424242] hover:bg-[#3f3f3f] transition-colors"
                     >
                       <span>{label}</span>
                     </button>
@@ -349,7 +350,6 @@ export default function Home() {
                     </div>
                   </div>
                 ))}
-                <div ref={messagesEndRef} />
               </div>
             )}
           </div>
@@ -498,7 +498,7 @@ export default function Home() {
                 className="mt-4 w-full rounded-xl bg-gradient-to-r from-pink-600 to-coral-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg hover:shadow-pink-600/40 hover:scale-[1.01] transition-all disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-lg"
               >
                 {pledging
-                  ? "Taking you to checkout…"
+                  ? "Continuing…"
                   : profileComplete
                   ? `Back the build — $${pledge}/mo`
                   : "Describe your pain point to unlock"}
@@ -529,7 +529,7 @@ export default function Home() {
           <div className="text-center">
             <p className="text-pink-600 font-semibold tracking-wide uppercase">Who I Am</p>
             <h2 className="mt-2 text-4xl font-display tracking-wide text-gray-900 sm:text-5xl">
-              NOT A CONSULTANT. A MAKER.
+              NOT A CONSULTANT.<br />A MAKER.
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
               I build, I teach, I show up for the AI community, and I write about all of it.
