@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -56,16 +60,26 @@ export default function Header() {
               </svg>
             </button>
           </div>
-          <div className="hidden lg:flex lg:gap-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-sm font-semibold leading-6 text-gray-800 hover:text-pink-600 transition-colors"
-              >
-                {item.name}
-              </Link>
-            ))}
+          <div className="hidden lg:flex lg:items-center lg:gap-x-9">
+            {navigation.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`group relative text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
+                    active ? "text-gray-900" : "text-gray-500 hover:text-gray-900"
+                  }`}
+                >
+                  {item.name}
+                  <span
+                    className={`absolute -bottom-2 left-0 h-0.5 w-full origin-left rounded-full bg-gradient-to-r from-pink-600 to-coral-600 transition-transform duration-300 ease-out ${
+                      active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    }`}
+                  />
+                </Link>
+              );
+            })}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             <Link

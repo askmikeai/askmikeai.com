@@ -1,21 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import CalendlyEmbed from "@/components/CalendlyEmbed";
+import AiHelper from "@/components/AiHelper";
 
 const PLEDGE_MIN = 5;
 const PLEDGE_MAX = 500;
 const PLEDGE_DEFAULT = 49;
 
-interface HelperMsg {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  isTyping?: boolean;
-}
-
-export default function BackPage() {
+export default function PledgePage() {
   // Form fields (prefilled from the home page draft).
   const [problem, setProblem] = useState("");
   const [frequency, setFrequency] = useState("");
@@ -26,13 +20,6 @@ export default function BackPage() {
   const [showCall, setShowCall] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Optional helper chat.
-  const [helperOpen, setHelperOpen] = useState(false);
-  const [hMessages, setHMessages] = useState<HelperMsg[]>([]);
-  const [hPrompt, setHPrompt] = useState("");
-  const [hLoading, setHLoading] = useState(false);
-  const hScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
@@ -50,11 +37,6 @@ export default function BackPage() {
     }
   }, []);
 
-  useEffect(() => {
-    const el = hScrollRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [hMessages]);
-
   const overMax = price > PLEDGE_MAX;
   const pledgePct = Math.min(
     100,
@@ -66,6 +48,14 @@ export default function BackPage() {
     if (!Number.isFinite(n)) return;
     setPrice(n);
     if (n > PLEDGE_MAX) setShowCall(true);
+  };
+
+  // AI assist fills the form fields.
+  const handleFill = (p: Record<string, string>) => {
+    setProfileExtra((prev) => ({ ...prev, ...p }));
+    if (p.problem?.trim()) setProblem(p.problem.trim());
+    if (p.frequency?.trim()) setFrequency(p.frequency.trim());
+    if (p.cost?.trim()) setCost(p.cost.trim());
   };
 
   const proceed = async () => {
@@ -97,81 +87,6 @@ export default function BackPage() {
     }
   };
 
-  const sendHelper = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = hPrompt.trim();
-    if (!text || hLoading) return;
-
-    const userMsg: HelperMsg = { id: Date.now().toString(), role: "user", content: text };
-    const aId = (Date.now() + 1).toString();
-    const updated = [...hMessages, userMsg];
-    setHMessages([...updated, { id: aId, role: "assistant", content: "", isTyping: true }]);
-    setHPrompt("");
-    setHLoading(true);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: updated.map((m) => ({ role: m.role, content: m.content })) }),
-      });
-      if (!res.ok) {
-        const d = await res.json().catch(() => ({}));
-        setHMessages((prev) =>
-          prev.map((m) =>
-            m.id === aId ? { ...m, isTyping: false, content: d.message || "I'm having trouble right now." } : m
-          )
-        );
-        setHLoading(false);
-        return;
-      }
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error("no reader");
-      const dec = new TextDecoder();
-      let buffer = "";
-      let acc = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += dec.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-        for (const line of lines) {
-          const t = line.trim();
-          if (!t.startsWith("data:")) continue;
-          const data = t.slice(5).trim();
-          if (data === "[DONE]") {
-            setHMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, isTyping: false } : m)));
-            continue;
-          }
-          try {
-            const j = JSON.parse(data);
-            if (j.content) {
-              acc += j.content;
-              const c = acc;
-              setHMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: c } : m)));
-            } else if (j.profile && typeof j.profile === "object") {
-              // Fill the form from what the helper understood.
-              const p = j.profile as Record<string, string>;
-              setProfileExtra((prev) => ({ ...prev, ...p }));
-              if (p.problem?.trim()) setProblem(p.problem.trim());
-              if (p.frequency?.trim()) setFrequency(p.frequency.trim());
-              if (p.cost?.trim()) setCost(p.cost.trim());
-            }
-          } catch {
-            /* skip */
-          }
-        }
-      }
-    } catch {
-      setHMessages((prev) =>
-        prev.map((m) => (m.id === aId ? { ...m, isTyping: false, content: "I'm having trouble right now." } : m))
-      );
-    } finally {
-      setHLoading(false);
-    }
-  };
-
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-2xl px-4 py-12 sm:py-16">
@@ -189,7 +104,10 @@ export default function BackPage() {
           {/* Pain point (prefilled) */}
           <div className="mt-8 space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700">The problem to solve</label>
+              <div className="flex items-center justify-between gap-3">
+                <label className="block text-sm font-medium text-gray-700">The problem to solve</label>
+                <AiHelper onFill={handleFill} label="✨ Fill this in with AI" />
+              </div>
               <textarea
                 value={problem}
                 onChange={(e) => setProblem(e.target.value)}
@@ -306,67 +224,6 @@ export default function BackPage() {
           </p>
         </div>
       </div>
-
-      {/* Optional helper chat */}
-      {!helperOpen && (
-        <button
-          onClick={() => setHelperOpen(true)}
-          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-gray-900 px-5 py-3 text-sm font-semibold text-white shadow-xl hover:bg-gray-800"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 10.5h8M8 14h5m-9 7l3.5-2H17a3 3 0 003-3V7a3 3 0 00-3-3H7a3 3 0 00-3 3v14z" />
-          </svg>
-          Need help?
-        </button>
-      )}
-
-      {helperOpen && (
-        <div className="fixed bottom-5 right-5 z-40 flex h-[28rem] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b border-gray-200 bg-gray-900 px-4 py-3 text-white">
-            <span className="text-sm font-semibold">Mike&apos;s assistant</span>
-            <button onClick={() => setHelperOpen(false)} aria-label="Close" className="text-gray-300 hover:text-white">
-              ✕
-            </button>
-          </div>
-          <div ref={hScrollRef} className="flex-1 space-y-3 overflow-y-auto p-4 text-sm">
-            {hMessages.length === 0 && (
-              <p className="text-gray-500">
-                Ask me anything about backing the build — or just tell me your problem and I&apos;ll fill
-                the form for you.
-              </p>
-            )}
-            {hMessages.map((m) => (
-              <div key={m.id} className={m.role === "user" ? "text-right" : "text-left"}>
-                <span
-                  className={`inline-block rounded-2xl px-3 py-2 ${
-                    m.role === "user" ? "bg-pink-600 text-white" : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {m.content || (m.isTyping ? "…" : "")}
-                </span>
-              </div>
-            ))}
-          </div>
-          <form onSubmit={sendHelper} className="border-t border-gray-200 p-3">
-            <div className="flex items-center gap-2">
-              <input
-                value={hPrompt}
-                onChange={(e) => setHPrompt(e.target.value)}
-                placeholder="Type a message…"
-                disabled={hLoading}
-                className="flex-1 rounded-xl border border-gray-300 px-3 py-2 text-gray-900 focus:border-pink-500 focus:outline-none"
-              />
-              <button
-                type="submit"
-                disabled={!hPrompt.trim() || hLoading}
-                className="rounded-xl bg-pink-600 px-3 py-2 text-white disabled:opacity-50"
-              >
-                Send
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
 
       {/* Schedule-a-call modal (for > $500/mo) */}
       {showCall && (

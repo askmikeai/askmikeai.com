@@ -2,24 +2,19 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
-
-interface Message {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  isTyping?: boolean;
-}
+import { useState, useRef } from "react";
+import AiHelper from "@/components/AiHelper";
 
 // Visitor sets the price within this range (kept in sync with src/lib/pledge.ts).
 const PLEDGE_MIN = 5;
 const PLEDGE_MAX = 500;
 const PLEDGE_DEFAULT = 49;
 
-// The pledge unlocks once the chat has captured the pain point. Name + email
-// are collected later (at Stripe checkout), so they don't gate here.
-const REQUIRED_FIELDS: { key: string; label: string }[] = [
-  { key: "problem", label: "your pain point" },
+const STARTERS = [
+  "I waste hours every week on…",
+  "There's no good tool for…",
+  "My team keeps getting stuck on…",
+  "I'd pay anything to never again…",
 ];
 
 const pillars = [
@@ -72,185 +67,17 @@ const steps = [
 ];
 
 export default function Home() {
-  const [prompt, setPrompt] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Pledge state
+  const [problem, setProblem] = useState("");
   const [pledge, setPledge] = useState(PLEDGE_DEFAULT);
   const [pledging, setPledging] = useState(false);
   const [pledgeError, setPledgeError] = useState<string | null>(null);
-  // Validation profile the chat bot fills in; gates the pledge button.
+  // Extra fields the optional AI assist captures (carried to /pledge).
   const [profile, setProfile] = useState<Record<string, string>>({});
 
-  const scrollToBottom = () => {
-    // Scroll only the messages box — not the whole page.
-    const el = scrollRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!prompt.trim() || isLoading) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: prompt.trim(),
-    };
-
-    const assistantId = (Date.now() + 1).toString();
-    const assistantMessage: Message = {
-      id: assistantId,
-      role: "assistant",
-      content: "",
-      isTyping: true,
-    };
-
-    const updatedMessages = [...messages, userMessage];
-    setMessages([...updatedMessages, assistantMessage]);
-    setPrompt("");
-    setIsLoading(true);
-
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "56px";
-    }
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: updatedMessages.map((msg) => ({
-            role: msg.role,
-            content: msg.content,
-          })),
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.fallback) {
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === assistantId
-                ? { ...msg, content: errorData.message, isTyping: false }
-                : msg
-            )
-          );
-          setIsLoading(false);
-          return;
-        }
-        throw new Error("Failed to get response");
-      }
-
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error("No reader available");
-
-      const decoder = new TextDecoder();
-      let accumulatedContent = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n").filter((line) => line.trim());
-
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6);
-            if (data === "[DONE]") {
-              setMessages((prev) =>
-                prev.map((msg) =>
-                  msg.id === assistantId ? { ...msg, isTyping: false } : msg
-                )
-              );
-              continue;
-            }
-
-            try {
-              const json = JSON.parse(data);
-              if (json.content) {
-                accumulatedContent += json.content;
-                const contentToShow = accumulatedContent;
-                setMessages((prev) =>
-                  prev.map((msg) =>
-                    msg.id === assistantId ? { ...msg, content: contentToShow } : msg
-                  )
-                );
-              } else if (json.profile && typeof json.profile === "object") {
-                // Server's running extraction of the validation fields.
-                setProfile(json.profile);
-              }
-            } catch {
-              // Skip invalid JSON
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Chat error:", error);
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === assistantId
-            ? {
-                ...msg,
-                content:
-                  "I apologize, but I encountered an error. Please try again, or reach out directly.",
-                isTyping: false,
-              }
-            : msg
-        )
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPrompt(e.target.value);
-    e.target.style.height = "56px";
-    e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
-  };
-
-  const router = useRouter();
-
-  const handlePledge = () => {
-    if (pledging || !profileComplete) return;
-    setPledging(true);
-    setPledgeError(null);
-
-    // Prefer the bot's extracted problem; fall back to the raw chat history.
-    const fromChat = messages
-      .filter((m) => m.role === "user")
-      .map((m) => m.content)
-      .join(" — ");
-    const painPoint = profile.problem || [fromChat, prompt.trim()].filter(Boolean).join(" — ");
-
-    // Hand off to the /back form (don't go straight to Stripe). It prefills
-    // from this draft and is where checkout actually starts.
-    try {
-      sessionStorage.setItem(
-        "pledgeDraft",
-        JSON.stringify({ amount: pledge, painPoint, profile })
-      );
-      router.push("/back");
-    } catch {
-      setPledgeError("Could not continue. Please try again.");
-      setPledging(false);
-    }
-  };
-
-  const hasMessages = messages.length > 0;
-  const missingFields = REQUIRED_FIELDS.filter((f) => !(profile[f.key] || "").trim());
-  const profileComplete = missingFields.length === 0;
+  const problemReady = problem.trim().length > 0;
   const clampPledge = (v: number) =>
     Math.min(PLEDGE_MAX, Math.max(PLEDGE_MIN, Math.round(v)));
   const pledgePct = Math.min(
@@ -258,180 +85,138 @@ export default function Home() {
     Math.max(0, ((pledge - PLEDGE_MIN) / (PLEDGE_MAX - PLEDGE_MIN)) * 100)
   );
 
+  const handlePledge = () => {
+    if (pledging || !problemReady) return;
+    setPledging(true);
+    setPledgeError(null);
+    try {
+      sessionStorage.setItem(
+        "pledgeDraft",
+        JSON.stringify({
+          amount: pledge,
+          painPoint: problem.trim(),
+          profile: { ...profile, problem: problem.trim() },
+        })
+      );
+      router.push("/pledge");
+    } catch {
+      setPledgeError("Could not continue. Please try again.");
+      setPledging(false);
+    }
+  };
+
+  // AI assist fills the form.
+  const handleFill = (p: Record<string, string>) => {
+    if (p.problem?.trim()) setProblem(p.problem.trim());
+    setProfile((prev) => ({ ...prev, ...p }));
+  };
+
+  const stepState = (n: number) => {
+    if (n === 1) return problemReady ? "done" : "active";
+    if (n === 2) return problemReady ? "active" : "todo";
+    return "todo";
+  };
+
   return (
     <div>
-      {/* Hero - Pain point intake */}
-      <section className="relative overflow-hidden h-[calc(100vh-4rem)]">
-        <div className="absolute inset-0 bg-[#212121]"></div>
-
-        <div className="relative mx-auto max-w-3xl px-4 flex flex-col h-full">
-          {/* Persistent title — stays put, outside the scrolling chat window */}
-          <div className="flex flex-col items-center pt-6 pb-3 text-center shrink-0">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-coral-500 flex items-center justify-center mb-3 shadow-lg">
+      {/* Hero — pain-point form */}
+      <section className="relative overflow-hidden bg-[#212121] py-12 sm:py-16">
+        <div className="relative mx-auto max-w-2xl px-4">
+          {/* Value prop */}
+          <div className="flex flex-col items-center text-center">
+            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-pink-500 to-coral-500 flex items-center justify-center mb-3 shadow-lg">
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
               </svg>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-medium text-white text-center">
-              Have a pain point?
-            </h1>
+            <h1 className="text-3xl sm:text-4xl font-medium text-white">Have a pain point?</h1>
+            <p className="mt-2 max-w-xl text-sm sm:text-base text-gray-300">
+              Tell Mike the problem costing you time, money, or sleep. If it resonates, he builds it —
+              and <span className="font-medium text-white">you set the price</span>.
+            </p>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] sm:text-xs text-gray-500">
+              <span className="inline-flex items-center gap-1">
+                <svg className="h-3.5 w-3.5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 0h10.5a1.5 1.5 0 011.5 1.5v6a1.5 1.5 0 01-1.5 1.5H6.75a1.5 1.5 0 01-1.5-1.5v-6a1.5 1.5 0 011.5-1.5z" />
+                </svg>
+                Secured by Stripe
+              </span>
+              <span className="text-gray-700">·</span>
+              <span>Cancel anytime</span>
+              <span className="text-gray-700">·</span>
+              <span>From $5/mo — you set it</span>
+            </div>
           </div>
 
-          <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto py-4">
-            {!hasMessages ? (
-              <div className="flex flex-col items-center justify-center pt-2 text-center">
-                <p className="text-sm sm:text-base text-gray-400 text-center max-w-xl">
-                  I&apos;m Mike. I build software that fixes real problems — the kind costing you time,
-                  money, or sleep. Tell me yours. If it resonates, I&apos;ll build it.
-                </p>
-
-                <div className="flex flex-wrap justify-center gap-1.5 max-w-xl mt-5">
-                  {[
-                    "I waste hours every week on…",
-                    "There's no good tool for…",
-                    "My team keeps getting stuck on…",
-                    "I'd pay anything to never again…",
-                  ].map((label) => (
-                    <button
-                      key={label}
-                      onClick={() => {
-                        setPrompt(label + " ");
-                        textareaRef.current?.focus();
-                      }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2f2f2f] text-gray-300 text-xs border border-[#424242] hover:bg-[#3f3f3f] transition-colors"
-                    >
-                      <span>{label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6 pb-4 pt-4">
-                {messages.map((message) => (
-                  <div key={message.id} className="flex gap-4">
-                    <div className="flex-shrink-0">
-                      {message.role === "assistant" ? (
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-coral-500 flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-                          </svg>
-                        </div>
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-[#5a5a5a] flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-400 mb-1">
-                        {message.role === "assistant" ? "Mike's assistant" : "You"}
-                      </p>
-                      <div className="text-white prose prose-invert prose-sm max-w-none">
-                        {message.content.split("\n").map((line, i) => {
-                          const parts = line.split(/(\*\*.*?\*\*)/g);
-                          return (
-                            <p key={i} className={line === "" ? "h-4" : "mb-2"}>
-                              {parts.map((part, j) => {
-                                if (part.startsWith("**") && part.endsWith("**")) {
-                                  return <strong key={j}>{part.slice(2, -2)}</strong>;
-                                }
-                                return <span key={j}>{part}</span>;
-                              })}
-                            </p>
-                          );
-                        })}
-                        {message.isTyping && (
-                          <span className="inline-block w-2 h-4 bg-gray-400 animate-pulse ml-1"></span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Input + pledge - sticky at bottom */}
-          <div className="sticky bottom-0 pb-6 pt-4 bg-gradient-to-t from-[#212121] via-[#212121] to-transparent">
-            {/* Step guide — lights up as you progress */}
-            <div className="mb-3 flex items-center justify-center gap-1.5 sm:gap-3 text-xs">
-              {[
-                { n: 1, label: "Describe your pain point", state: profileComplete ? "done" : "active" },
-                { n: 2, label: "Name your price", state: profileComplete ? "active" : "todo" },
-                { n: 3, label: "Back the build", state: "todo" },
-              ].map((s, i) => (
+          {/* Step guide */}
+          <div className="mt-6 flex items-center justify-center gap-1.5 sm:gap-3 text-xs">
+            {[
+              { n: 1, label: "Describe your pain point" },
+              { n: 2, label: "Name your price" },
+              { n: 3, label: "Back the build" },
+            ].map((s, i) => {
+              const state = stepState(s.n);
+              return (
                 <div key={s.n} className="flex items-center gap-1.5 sm:gap-3">
                   <div className="flex items-center gap-1.5">
                     <span
                       className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${
-                        s.state === "done"
+                        state === "done"
                           ? "bg-teal-500 text-white"
-                          : s.state === "active"
+                          : state === "active"
                           ? "bg-pink-500 text-white"
                           : "bg-[#424242] text-gray-400"
                       }`}
                     >
-                      {s.state === "done" ? "✓" : s.n}
+                      {state === "done" ? "✓" : s.n}
                     </span>
-                    <span
-                      className={`hidden sm:inline ${
-                        s.state === "todo" ? "text-gray-500" : "text-gray-200"
-                      }`}
-                    >
+                    <span className={`hidden sm:inline ${state === "todo" ? "text-gray-500" : "text-gray-200"}`}>
                       {s.label}
                     </span>
                   </div>
                   {i < 2 && <span className="text-gray-600">→</span>}
                 </div>
+              );
+            })}
+          </div>
+
+          {/* The form */}
+          <div className="mt-6 rounded-2xl border border-[#424242] bg-[#2f2f2f] p-5 shadow-xl">
+            <label htmlFor="problem" className="block text-sm font-medium text-gray-200">
+              What&apos;s the problem you want solved?
+            </label>
+            <textarea
+              id="problem"
+              ref={textareaRef}
+              value={problem}
+              onChange={(e) => setProblem(e.target.value)}
+              rows={3}
+              placeholder="Describe your pain point…"
+              className="mt-2 w-full resize-none rounded-xl border border-[#424242] bg-[#212121] px-4 py-3 text-white placeholder-gray-500 focus:border-pink-500 focus:outline-none"
+            />
+
+            {/* Quick starters + AI assist */}
+            <div className="mt-3 flex flex-wrap items-center gap-1.5">
+              {STARTERS.map((label) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => {
+                    setProblem((p) => (p ? p : label + " "));
+                    textareaRef.current?.focus();
+                  }}
+                  className="rounded-lg border border-[#424242] bg-[#212121] px-3 py-1.5 text-xs text-gray-300 transition-colors hover:bg-[#3f3f3f]"
+                >
+                  {label}
+                </button>
               ))}
             </div>
+            <div className="mt-3">
+              <AiHelper onFill={handleFill} />
+            </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="relative bg-[#2f2f2f] rounded-2xl border border-[#424242] shadow-xl">
-                <textarea
-                  ref={textareaRef}
-                  value={prompt}
-                  onChange={handleTextareaChange}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSubmit(e);
-                    }
-                  }}
-                  placeholder="Describe your pain point…"
-                  rows={1}
-                  disabled={isLoading}
-                  className="w-full px-4 py-4 pr-12 bg-transparent text-white placeholder-gray-400 focus:outline-none resize-none text-base disabled:opacity-50"
-                  style={{ minHeight: "56px", maxHeight: "200px" }}
-                />
-                <button
-                  type="submit"
-                  disabled={!prompt.trim() || isLoading}
-                  className={`absolute right-2 bottom-2 p-2 rounded-lg transition-all ${
-                    prompt.trim() && !isLoading
-                      ? "bg-white text-black hover:bg-gray-200"
-                      : "bg-[#676767] text-[#2f2f2f] cursor-not-allowed"
-                  }`}
-                >
-                  {isLoading ? (
-                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </form>
-
-            {/* Pledge / name-your-price */}
-            <div className="mt-4 bg-[#2f2f2f] rounded-2xl border border-[#424242] shadow-xl p-5">
+            {/* Money setter */}
+            <div className="mt-6 border-t border-[#424242] pt-5">
               <div className="flex items-baseline justify-between">
                 <label htmlFor="pledge" className="text-sm font-medium text-gray-300">
                   What&apos;s solving it worth, each month?
@@ -444,29 +229,23 @@ export default function Home() {
                     value={pledge}
                     min={PLEDGE_MIN}
                     max={PLEDGE_MAX}
-                    onChange={(e) =>
-                      setPledge(e.target.value === "" ? PLEDGE_MIN : Number(e.target.value))
-                    }
-                    onBlur={(e) =>
-                      setPledge(clampPledge(Number(e.target.value) || PLEDGE_DEFAULT))
-                    }
+                    onChange={(e) => setPledge(e.target.value === "" ? PLEDGE_MIN : Number(e.target.value))}
+                    onBlur={(e) => setPledge(clampPledge(Number(e.target.value) || PLEDGE_DEFAULT))}
                     aria-label="Set your monthly price"
-                    className="w-[3.2ch] bg-transparent text-3xl font-display tracking-wide text-white focus:outline-none rounded-md [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    className="w-[3.2ch] bg-transparent text-3xl font-display tracking-wide text-white focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
                   <span className="text-gray-400 text-sm">/mo</span>
                 </div>
               </div>
 
-              {/* Money bar */}
               <div className="mt-4">
-                <div className="relative h-11 flex items-center">
-                  <div className="h-4 w-full rounded-full bg-[#424242] overflow-hidden">
+                <div className="relative flex h-11 items-center">
+                  <div className="h-4 w-full overflow-hidden rounded-full bg-[#424242]">
                     <div
                       className="h-full bg-gradient-to-r from-teal-500 via-pink-500 to-coral-500"
                       style={{ width: `${pledgePct}%` }}
                     ></div>
                   </div>
-                  {/* Draggable handle: white circle with a $ riding the end of the fill */}
                   <div
                     className="pointer-events-none absolute top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg ring-1 ring-black/10"
                     style={{ left: `${pledgePct}%` }}
@@ -493,30 +272,21 @@ export default function Home() {
 
               <button
                 onClick={handlePledge}
-                disabled={pledging || !profileComplete}
-                title={!profileComplete ? "Describe your pain point in the chat to unlock" : undefined}
-                className="mt-4 w-full rounded-xl bg-gradient-to-r from-pink-600 to-coral-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg hover:shadow-pink-600/40 hover:scale-[1.01] transition-all disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-lg"
+                disabled={pledging || !problemReady}
+                title={!problemReady ? "Describe your pain point to continue" : undefined}
+                className="mt-4 w-full rounded-xl bg-gradient-to-r from-pink-600 to-coral-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg transition-all hover:scale-[1.01] hover:shadow-pink-600/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-lg"
               >
                 {pledging
                   ? "Continuing…"
-                  : profileComplete
+                  : problemReady
                   ? `Back the build — $${pledge}/mo`
-                  : "Describe your pain point to unlock"}
+                  : "Describe your pain point to continue"}
               </button>
 
-              {!profileComplete && (
-                <p className="mt-2 text-center text-xs text-gray-400">
-                  Tell me your pain point in the chat above and the pledge unlocks. You&apos;ll add
-                  your details at checkout.
-                </p>
-              )}
-
-              {pledgeError && (
-                <p className="mt-2 text-sm text-coral-400 text-center">{pledgeError}</p>
-              )}
+              {pledgeError && <p className="mt-2 text-center text-sm text-coral-400">{pledgeError}</p>}
               <p className="mt-3 text-center text-xs text-gray-500">
-                You set the price. I build and own the software; you license it at your price. After you
-                pledge, you&apos;ll confirm your email and book a Zoom with me.
+                You set the price. I build and own the software; you license it at your price. Next:
+                confirm your email and book a Zoom with me.
               </p>
             </div>
           </div>

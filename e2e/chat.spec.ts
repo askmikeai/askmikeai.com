@@ -1,49 +1,32 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * End-to-end tests for the home-page chat box + pledge gating.
+ * E2E for the home pain-point form + optional AI assist.
  *
  * /api/chat is mocked with canned SSE in the shape the client parses
- * (`data: {"content": "..."}` and `data: {"profile": {...}}`, terminated by
- * `data: [DONE]`). This keeps the tests deterministic and free — they exercise
- * the full UI path without calling the real LLM provider.
+ * (`data: {"content": "..."}` / `data: {"profile": {...}}`, ended by `[DONE]`),
+ * so the AI-assist tests are deterministic and free.
  */
 
-const PLACEHOLDER = "Describe your pain point…";
+const PROBLEM_PLACEHOLDER = "Describe your pain point…";
 
 function sse(parts: Array<Record<string, unknown>>): string {
   return parts.map((p) => `data: ${JSON.stringify(p)}\n\n`).join("") + `data: [DONE]\n\n`;
 }
 
-test("chat box sends a message and renders the streamed reply", async ({ page }) => {
-  const replyParts = ["That sounds ", "genuinely frustrating — ", "tell me more."];
-  await page.route("**/api/chat", (route) =>
-    route.fulfill({
-      status: 200,
-      headers: { "content-type": "text/event-stream" },
-      body: sse(replyParts.map((content) => ({ content }))),
-    })
-  );
-
+test("typing a pain point enables the Back the build button", async ({ page }) => {
   await page.goto("/");
-  const input = page.getByPlaceholder(PLACEHOLDER);
-  await expect(input).toBeVisible();
-  await input.fill("I waste hours every week on manual invoicing.");
-  await input.press("Enter");
 
-  await expect(page.getByText("I waste hours every week on manual invoicing.")).toBeVisible();
-  await expect(page.getByText(replyParts.join(""))).toBeVisible();
+  const locked = page.getByRole("button", { name: "Describe your pain point to continue" });
+  await expect(locked).toBeVisible();
+  await expect(locked).toBeDisabled();
+
+  await page.getByPlaceholder(PROBLEM_PLACEHOLDER).fill("I waste hours reconciling invoices.");
+
+  await expect(page.getByRole("button", { name: /Back the build —/ })).toBeEnabled();
 });
 
-test("pledge button unlocks once the chat captures the pain point", async ({ page }) => {
-  await page.goto("/");
-
-  // Locked initially.
-  const lockedBtn = page.getByRole("button", { name: "Describe your pain point to unlock" });
-  await expect(lockedBtn).toBeVisible();
-  await expect(lockedBtn).toBeDisabled();
-
-  // A reply that returns just the captured pain point — enough to unlock.
+test("the AI magic button fills the form and unlocks the pledge", async ({ page }) => {
   await page.route("**/api/chat", (route) =>
     route.fulfill({
       status: 200,
@@ -55,16 +38,19 @@ test("pledge button unlocks once the chat captures the pain point", async ({ pag
     })
   );
 
-  const input = page.getByPlaceholder(PLACEHOLDER);
-  await input.fill("I waste hours reconciling invoices.");
-  await input.press("Enter");
+  await page.goto("/");
+  await page.getByRole("button", { name: /Describe it with AI/ }).click();
 
-  // Button unlocks and switches to the pledge CTA.
-  const unlocked = page.getByRole("button", { name: /Back the build —/ });
-  await expect(unlocked).toBeEnabled();
+  const aiInput = page.getByPlaceholder(/lose hours each week/);
+  await aiInput.fill("I lose hours every week reconciling invoices.");
+  await page.getByRole("button", { name: "Send" }).click();
+
+  // The problem field gets filled and the pledge unlocks.
+  await expect(page.getByPlaceholder(PROBLEM_PLACEHOLDER)).toHaveValue("manual invoicing eats the week");
+  await expect(page.getByRole("button", { name: /Back the build —/ })).toBeEnabled();
 });
 
-test("chat box surfaces the graceful fallback on a 503", async ({ page }) => {
+test("the AI assist surfaces the graceful fallback on a 503", async ({ page }) => {
   await page.route("**/api/chat", (route) =>
     route.fulfill({
       status: 503,
@@ -78,9 +64,9 @@ test("chat box surfaces the graceful fallback on a 503", async ({ page }) => {
   );
 
   await page.goto("/");
-  const input = page.getByPlaceholder(PLACEHOLDER);
-  await input.fill("Testing the fallback path.");
-  await input.press("Enter");
+  await page.getByRole("button", { name: /Describe it with AI/ }).click();
+  await page.getByPlaceholder(/lose hours each week/).fill("Testing the fallback path.");
+  await page.getByRole("button", { name: "Send" }).click();
 
   await expect(page.getByText("Chat isn't connected yet. Reach out to Mike directly.")).toBeVisible();
 });
