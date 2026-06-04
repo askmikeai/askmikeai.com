@@ -79,3 +79,56 @@ export async function recordPledge(p: PledgeRecord): Promise<boolean> {
     return false;
   }
 }
+
+let connectionsReady = false;
+
+async function ensureConnectionsTable(sql: NeonQueryFunction<false, false>) {
+  if (connectionsReady) return;
+  await sql`
+    CREATE TABLE IF NOT EXISTS connections (
+      id BIGSERIAL PRIMARY KEY,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      name TEXT,
+      email TEXT,
+      company TEXT,
+      role TEXT,
+      working_on TEXT,
+      phone TEXT,
+      source TEXT
+    )
+  `;
+  connectionsReady = true;
+}
+
+export interface ConnectionRecord {
+  name: string;
+  email: string;
+  company?: string | null;
+  role?: string | null;
+  workingOn?: string | null;
+  phone?: string | null;
+  source?: string | null;
+}
+
+/** Add a person to the personal CRM (connections table). Best-effort. */
+export async function recordConnection(p: ConnectionRecord): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) {
+    console.warn("recordConnection: no database configured (NEON_US_DSN unset)");
+    return false;
+  }
+  try {
+    await ensureConnectionsTable(sql);
+    await sql`
+      INSERT INTO connections (name, email, company, role, working_on, phone, source)
+      VALUES (
+        ${p.name}, ${p.email}, ${p.company ?? null}, ${p.role ?? null},
+        ${p.workingOn ?? null}, ${p.phone ?? null}, ${p.source ?? null}
+      )
+    `;
+    return true;
+  } catch (error) {
+    console.error("recordConnection failed:", error);
+    return false;
+  }
+}
