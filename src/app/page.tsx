@@ -15,6 +15,18 @@ const PLEDGE_MIN = 5;
 const PLEDGE_MAX = 500;
 const PLEDGE_DEFAULT = 49;
 
+// Fields the chat bot must collect before the pledge unlocks (kept in sync with
+// PROFILE_FIELDS in src/app/api/chat/route.ts). Price comes from the slider.
+const REQUIRED_FIELDS: { key: string; label: string }[] = [
+  { key: "problem", label: "the problem" },
+  { key: "frequency", label: "how often it happens" },
+  { key: "cost", label: "what it costs you" },
+  { key: "name", label: "your name" },
+  { key: "email", label: "your email" },
+  { key: "company", label: "your company" },
+  { key: "role", label: "your role" },
+];
+
 const pillars = [
   {
     title: "Builder",
@@ -75,6 +87,8 @@ export default function Home() {
   const [pledge, setPledge] = useState(PLEDGE_DEFAULT);
   const [pledging, setPledging] = useState(false);
   const [pledgeError, setPledgeError] = useState<string | null>(null);
+  // Validation profile the chat bot fills in; gates the pledge button.
+  const [profile, setProfile] = useState<Record<string, string>>({});
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -174,6 +188,9 @@ export default function Home() {
                     msg.id === assistantId ? { ...msg, content: contentToShow } : msg
                   )
                 );
+              } else if (json.profile && typeof json.profile === "object") {
+                // Server's running extraction of the validation fields.
+                setProfile(json.profile);
               }
             } catch {
               // Skip invalid JSON
@@ -207,22 +224,22 @@ export default function Home() {
   };
 
   const handlePledge = async () => {
-    if (pledging) return;
+    if (pledging || !profileComplete) return;
     setPledging(true);
     setPledgeError(null);
 
-    // The pain point is everything the visitor has typed — chat history plus any draft.
+    // Prefer the bot's extracted problem; fall back to the raw chat history.
     const fromChat = messages
       .filter((m) => m.role === "user")
       .map((m) => m.content)
       .join(" — ");
-    const painPoint = [fromChat, prompt.trim()].filter(Boolean).join(" — ");
+    const painPoint = profile.problem || [fromChat, prompt.trim()].filter(Boolean).join(" — ");
 
     try {
       const res = await fetch("/api/pledge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: pledge, painPoint }),
+        body: JSON.stringify({ amount: pledge, painPoint, profile }),
       });
       const data = await res.json();
       if (!res.ok || !data.url) {
@@ -236,6 +253,8 @@ export default function Home() {
   };
 
   const hasMessages = messages.length > 0;
+  const missingFields = REQUIRED_FIELDS.filter((f) => !(profile[f.key] || "").trim());
+  const profileComplete = missingFields.length === 0;
   const clampPledge = (v: number) =>
     Math.min(PLEDGE_MAX, Math.max(PLEDGE_MIN, Math.round(v)));
   const pledgePct = Math.min(
@@ -442,12 +461,43 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Validation checklist — the pledge unlocks once the chat has it all. */}
+              {!profileComplete && (
+                <div className="mt-4 rounded-xl border border-[#424242] bg-[#262626] p-3">
+                  <p className="text-xs font-medium text-gray-300">
+                    Chat with me above to unlock the pledge — still need:
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {REQUIRED_FIELDS.map((f) => {
+                      const done = !!(profile[f.key] || "").trim();
+                      return (
+                        <span
+                          key={f.key}
+                          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${
+                            done
+                              ? "bg-teal-600/20 text-teal-300"
+                              : "bg-[#333] text-gray-400"
+                          }`}
+                        >
+                          <span>{done ? "✓" : "○"}</span> {f.label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <button
                 onClick={handlePledge}
-                disabled={pledging}
-                className="mt-4 w-full rounded-xl bg-gradient-to-r from-pink-600 to-coral-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg hover:shadow-pink-600/40 hover:scale-[1.01] transition-all disabled:opacity-60 disabled:hover:scale-100"
+                disabled={pledging || !profileComplete}
+                title={!profileComplete ? "Answer the questions in the chat to unlock" : undefined}
+                className="mt-4 w-full rounded-xl bg-gradient-to-r from-pink-600 to-coral-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg hover:shadow-pink-600/40 hover:scale-[1.01] transition-all disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-lg"
               >
-                {pledging ? "Taking you to checkout…" : `Back the build — $${pledge}/mo`}
+                {pledging
+                  ? "Taking you to checkout…"
+                  : profileComplete
+                  ? `Back the build — $${pledge}/mo`
+                  : "Answer a few questions to unlock"}
               </button>
 
               {pledgeError && (

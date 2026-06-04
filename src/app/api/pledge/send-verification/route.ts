@@ -28,9 +28,20 @@ export async function POST(request: NextRequest) {
 
     const amount = Number(session.metadata?.pledgedMonthly || 0);
     const painPoint = session.metadata?.painPoint || "";
+    const m = session.metadata || {};
 
-    // Collect the pledge (price paid + the problem) in the database. Best-effort.
-    await recordPledge({ email, amount, painPoint, stripeSessionId: sessionId });
+    // Collect the pledge (price paid + the problem + validation profile). Best-effort.
+    await recordPledge({
+      email,
+      amount,
+      painPoint,
+      stripeSessionId: sessionId,
+      name: m.name || "",
+      company: m.company || "",
+      role: m.role || "",
+      frequency: m.frequency || "",
+      cost: m.cost || "",
+    });
 
     const token = signPledgeToken({ email, amount, painPoint });
     const verifyUrl = `${getBaseUrl()}/pledge/verify?token=${encodeURIComponent(token)}`;

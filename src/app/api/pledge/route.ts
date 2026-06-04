@@ -4,9 +4,24 @@ import { clampAmount } from "@/lib/pledge";
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, painPoint } = await request.json();
+    const { amount, painPoint, profile } = await request.json();
     const dollars = clampAmount(amount);
-    const summary = String(painPoint || "").trim().slice(0, 480);
+    const p: Record<string, string> =
+      profile && typeof profile === "object" ? profile : {};
+    const field = (v: unknown) => String(v || "").trim().slice(0, 480);
+    const summary = field(painPoint || p.problem);
+
+    // Validation profile collected by the chat bot — flows to send-verification.
+    const meta: Record<string, string> = {
+      painPoint: summary,
+      pledgedMonthly: String(dollars),
+      name: field(p.name),
+      email: field(p.email),
+      company: field(p.company),
+      role: field(p.role),
+      frequency: field(p.frequency),
+      cost: field(p.cost),
+    };
 
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json(
@@ -38,11 +53,12 @@ export async function POST(request: NextRequest) {
       ],
       // Stripe collects + we later verify ownership of this email.
       billing_address_collection: "auto",
+      ...(meta.email ? { customer_email: meta.email } : {}),
       allow_promotion_codes: false,
       subscription_data: {
-        metadata: { painPoint: summary, pledgedMonthly: String(dollars) },
+        metadata: meta,
       },
-      metadata: { painPoint: summary, pledgedMonthly: String(dollars) },
+      metadata: meta,
       success_url: `${baseUrl}/pledge/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/?pledge=cancelled`,
     });

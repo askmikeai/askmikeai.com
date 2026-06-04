@@ -30,6 +30,12 @@ async function ensurePledgeTable(sql: NeonQueryFunction<false, false>) {
       stripe_session_id TEXT UNIQUE
     )
   `;
+  // Validation-profile columns (added idempotently so existing tables upgrade).
+  await sql`ALTER TABLE pledges ADD COLUMN IF NOT EXISTS name TEXT`;
+  await sql`ALTER TABLE pledges ADD COLUMN IF NOT EXISTS company TEXT`;
+  await sql`ALTER TABLE pledges ADD COLUMN IF NOT EXISTS role TEXT`;
+  await sql`ALTER TABLE pledges ADD COLUMN IF NOT EXISTS frequency TEXT`;
+  await sql`ALTER TABLE pledges ADD COLUMN IF NOT EXISTS cost TEXT`;
   tableReady = true;
 }
 
@@ -38,6 +44,11 @@ export interface PledgeRecord {
   amount: number; // dollars / month
   painPoint: string;
   stripeSessionId?: string | null;
+  name?: string | null;
+  company?: string | null;
+  role?: string | null;
+  frequency?: string | null;
+  cost?: string | null;
 }
 
 /**
@@ -54,8 +65,12 @@ export async function recordPledge(p: PledgeRecord): Promise<boolean> {
   try {
     await ensurePledgeTable(sql);
     await sql`
-      INSERT INTO pledges (email, amount_monthly, pain_point, stripe_session_id)
-      VALUES (${p.email ?? null}, ${p.amount}, ${p.painPoint}, ${p.stripeSessionId ?? null})
+      INSERT INTO pledges
+        (email, amount_monthly, pain_point, stripe_session_id, name, company, role, frequency, cost)
+      VALUES (
+        ${p.email ?? null}, ${p.amount}, ${p.painPoint}, ${p.stripeSessionId ?? null},
+        ${p.name ?? null}, ${p.company ?? null}, ${p.role ?? null}, ${p.frequency ?? null}, ${p.cost ?? null}
+      )
       ON CONFLICT (stripe_session_id) DO NOTHING
     `;
     return true;
