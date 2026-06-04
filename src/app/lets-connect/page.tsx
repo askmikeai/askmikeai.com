@@ -130,6 +130,26 @@ export default function LetsConnectPage() {
               </p>
             </form>
           )}
+
+          {/* WhatsApp QR */}
+          <div className="mt-10 flex flex-col items-center text-center">
+            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">Rather just text?</p>
+            <a
+              href="https://wa.me/17542959900"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-block rounded-3xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/whatsapp-qr.svg" alt="Scan to message Mike on WhatsApp" width={176} height={176} className="h-44 w-44" />
+            </a>
+            <p className="mt-3 text-sm text-gray-600">
+              Scan to WhatsApp me ·{" "}
+              <a href="https://wa.me/17542959900" className="font-medium text-teal-600 hover:text-teal-700">
+                +1 (754) 295-9900
+              </a>
+            </p>
+          </div>
         </div>
       </section>
     </main>
