@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       amount,
       painPoint,
       stripeSessionId: sessionId,
-      name: m.name || "",
+      name: m.name || session.customer_details?.name || "",
       company: m.company || "",
       role: m.role || "",
       frequency: m.frequency || "",

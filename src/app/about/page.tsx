@@ -39,16 +39,29 @@ export default function AboutPage() {
         <div className="absolute bottom-20 left-20 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl"></div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="text-pink-400 font-semibold tracking-wide uppercase mb-4">About</p>
-            <h1 className="text-5xl font-display tracking-wide text-white sm:text-6xl">
-              HI, I&apos;M MIKE.
-            </h1>
-            <p className="mt-6 text-xl text-gray-300">
-              I&apos;m a builder, an educator, and a member of the AI community. I&apos;m not a
-              consultant — I don&apos;t sell strategy by the hour. I make software that solves real
-              problems, and I let the people who have the problem decide what it&apos;s worth.
-            </p>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10 lg:gap-16 items-center">
+            <div className="max-w-3xl">
+              <p className="text-pink-400 font-semibold tracking-wide uppercase mb-4">About</p>
+              <h1 className="text-5xl font-display tracking-wide text-white sm:text-6xl">
+                HI, I&apos;M MIKE.
+              </h1>
+              <p className="mt-6 text-xl text-gray-300">
+                I&apos;m a builder, an educator, and a member of the AI community. I&apos;m not a
+                consultant — I don&apos;t sell strategy by the hour. I make software that solves real
+                problems, and I let the people who have the problem decide what it&apos;s worth.
+              </p>
+            </div>
+            <div className="relative mx-auto lg:mx-0 shrink-0">
+              <div className="absolute -inset-3 rounded-full bg-gradient-to-br from-pink-500/40 to-teal-500/30 blur-2xl"></div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/mike.jpg"
+                alt="Mike Friedberg"
+                width={288}
+                height={288}
+                className="relative h-56 w-56 sm:h-72 sm:w-72 rounded-full object-cover ring-4 ring-white/10 shadow-2xl"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -91,6 +104,50 @@ export default function AboutPage() {
               </div>
               <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-teal-500/30 rounded-full blur-2xl"></div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Currently building */}
+      <section className="py-20 bg-gray-900">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-teal-400 font-semibold tracking-wide uppercase">Currently Building</p>
+            <h2 className="mt-2 text-4xl font-display tracking-wide text-white sm:text-5xl">
+              WHAT I&apos;M SHIPPING NOW
+            </h2>
+            <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+              Two products in active development right now.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
+            {[
+              { name: "NextHello.ai", href: "https://nexthello.ai" },
+              { name: "MergeRequest.ai", href: "https://mergerequest.ai" },
+            ].map((product) => (
+              <a
+                key={product.name}
+                href={product.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between rounded-3xl border border-white/10 bg-white/5 p-8 transition-colors hover:bg-white/10"
+              >
+                <div>
+                  <h3 className="text-2xl font-bold text-white">{product.name}</h3>
+                  <p className="mt-1 text-sm text-gray-400">{product.href.replace("https://", "")}</p>
+                </div>
+                <svg
+                  className="h-6 w-6 text-gray-500 transition-transform group-hover:translate-x-1 group-hover:text-pink-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </a>
+            ))}
           </div>
         </div>
       </section>

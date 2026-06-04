@@ -35,38 +35,28 @@ test("chat box sends a message and renders the streamed reply", async ({ page })
   await expect(page.getByText(replyParts.join(""))).toBeVisible();
 });
 
-test("pledge button is locked until the chat collects the full profile", async ({ page }) => {
+test("pledge button unlocks once the chat captures the pain point", async ({ page }) => {
   await page.goto("/");
 
   // Locked initially.
-  const lockedBtn = page.getByRole("button", { name: "Answer a few questions to unlock" });
+  const lockedBtn = page.getByRole("button", { name: "Describe your pain point to unlock" });
   await expect(lockedBtn).toBeVisible();
   await expect(lockedBtn).toBeDisabled();
 
-  // Reply that also returns a COMPLETE validation profile.
+  // A reply that returns just the captured pain point — enough to unlock.
   await page.route("**/api/chat", (route) =>
     route.fulfill({
       status: 200,
       headers: { "content-type": "text/event-stream" },
       body: sse([
-        { content: "Perfect — that's everything I need." },
-        {
-          profile: {
-            name: "Sam",
-            email: "sam@acme.com",
-            company: "Acme",
-            role: "Ops Lead",
-            problem: "manual invoicing eats the week",
-            frequency: "weekly",
-            cost: "~5 hours/week",
-          },
-        },
+        { content: "Got it — that sounds painful." },
+        { profile: { problem: "manual invoicing eats the week" } },
       ]),
     })
   );
 
   const input = page.getByPlaceholder(PLACEHOLDER);
-  await input.fill("Here are all my details.");
+  await input.fill("I waste hours reconciling invoices.");
   await input.press("Enter");
 
   // Button unlocks and switches to the pledge CTA.
