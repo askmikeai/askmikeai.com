@@ -20,6 +20,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} - AskMikeAI Blog`,
     description: post.excerpt,
+    alternates: { canonical: `/blog/${slug}` },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `/blog/${slug}`,
+      type: "article",
+    },
   };
 }
 
@@ -152,7 +159,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Share & Follow Section */}
           <div className="mt-12 pt-8 border-t border-gray-200">
-            <h3 className="text-lg font-bold text-gray-900">Follow us for more insights</h3>
+            <h3 className="text-lg font-bold text-gray-900">Follow me for more</h3>
             <div className="mt-4 flex gap-4">
               <a
                 href="https://x.com/askmikeai"
@@ -202,7 +209,7 @@ export default async function BlogPostPage({ params }: Props) {
             Describe your pain point and name what fixing it is worth. If it resonates, I&apos;ll build it.
           </p>
           <Link
-            href="/"
+            href="/pledge"
             className="mt-8 inline-block rounded-full bg-white px-10 py-4 text-lg font-semibold text-teal-700 shadow-xl hover:bg-gray-100 hover:scale-105 transition-all"
           >
             Back the Build

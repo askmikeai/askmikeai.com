@@ -14,7 +14,6 @@ export default function Header() {
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "What I Build", href: "/services" },
-    { name: "Writing", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -83,7 +82,7 @@ export default function Header() {
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             <Link
-              href="/"
+              href="/pledge"
               className="rounded-full bg-gradient-to-r from-pink-600 to-coral-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-pink-600/30 hover:shadow-pink-600/50 hover:scale-105 transition-all"
             >
               Back the Build
@@ -106,7 +105,7 @@ export default function Header() {
                 </Link>
               ))}
               <Link
-                href="/"
+                href="/pledge"
                 className="block rounded-full bg-gradient-to-r from-pink-600 to-coral-600 px-3 py-2 text-base font-medium text-white text-center mt-4"
                 onClick={() => setMobileMenuOpen(false)}
               >

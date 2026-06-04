@@ -206,6 +206,28 @@ export default function PledgePage() {
             )}
           </div>
 
+          {/* What happens after you pay — plain-language terms */}
+          <div className="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-sm text-gray-700">
+            <p className="font-semibold text-gray-900">What happens after you pay</p>
+            <ul className="mt-2 space-y-1.5">
+              <li className="flex gap-2">
+                <span className="text-pink-600">•</span> You&apos;re backing a <strong>proposed</strong> build — not guaranteed custom software.
+              </li>
+              <li className="flex gap-2">
+                <span className="text-pink-600">•</span> I review your request within <strong>2 business days</strong>.
+              </li>
+              <li className="flex gap-2">
+                <span className="text-pink-600">•</span> If I accept it, you get access at your pledged monthly price.
+              </li>
+              <li className="flex gap-2">
+                <span className="text-pink-600">•</span> If I don&apos;t accept it, your first payment is <strong>refunded</strong>.
+              </li>
+              <li className="flex gap-2">
+                <span className="text-pink-600">•</span> Cancel anytime from Stripe.
+              </li>
+            </ul>
+          </div>
+
           {error && <p className="mt-4 text-sm text-coral-600">{error}</p>}
 
           <button

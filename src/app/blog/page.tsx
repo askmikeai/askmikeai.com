@@ -6,6 +6,13 @@ export const metadata: Metadata = {
   title: "Writing - AskMikeAI",
   description:
     "Mike writes about what he's building, breaking, and learning in AI — in public, one post at a time.",
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    title: "Writing — AskMikeAI",
+    description:
+      "Build-in-public notes on what Mike is shipping, breaking, and learning in AI.",
+    url: "/blog",
+  },
 };
 
 const gradients = [
@@ -41,6 +48,21 @@ export default function BlogPage() {
       {/* Blog Posts */}
       <section className="py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {posts.length === 0 && (
+            <div className="mx-auto max-w-xl rounded-3xl border border-gray-200 bg-gray-50 p-10 text-center">
+              <h2 className="text-2xl font-display tracking-wide text-gray-900">NOTES ARE COMING</h2>
+              <p className="mt-3 text-gray-600">
+                I&apos;m building in public — real notes on what I&apos;m shipping, what broke, and what
+                I&apos;m figuring out will land here soon. In the meantime, tell me your pain point.
+              </p>
+              <Link
+                href="/pledge"
+                className="mt-6 inline-block rounded-full bg-gradient-to-r from-pink-600 to-coral-600 px-8 py-3 font-semibold text-white shadow-lg transition-all hover:scale-105"
+              >
+                Back the Build
+              </Link>
+            </div>
+          )}
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post, index) => (
               <article
@@ -103,38 +125,6 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Newsletter CTA */}
-      <section className="py-16 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative bg-gradient-to-br from-pink-700 via-pink-800 to-purple-900 rounded-3xl p-8 md:p-12 overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
-
-            <div className="relative text-center">
-              <h2 className="text-3xl font-display tracking-wide text-white md:text-4xl">
-                STAY UPDATED ON AI TRENDS
-              </h2>
-              <p className="mt-4 text-lg text-pink-200 max-w-2xl mx-auto">
-                Subscribe to our newsletter for the latest insights, tutorials, and industry
-                news delivered to your inbox.
-              </p>
-              <form className="mt-8 flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 rounded-full px-6 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                />
-                <button
-                  type="submit"
-                  className="rounded-full bg-white px-8 py-3 font-semibold text-pink-700 hover:bg-gray-100 transition-colors"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

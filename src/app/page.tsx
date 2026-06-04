@@ -131,8 +131,9 @@ export default function Home() {
             </div>
             <h1 className="text-3xl sm:text-4xl font-medium text-white">Have a pain point?</h1>
             <p className="mt-2 max-w-xl text-sm sm:text-base text-gray-300">
-              Tell Mike the problem costing you time, money, or sleep. If it resonates, he builds it —
-              and <span className="font-medium text-white">you set the price</span>.
+              Tell me the problem costing you time, money, or sleep. If I take it on, you back the
+              build at <span className="font-medium text-white">the price you set</span> — and
+              you&apos;re not charged unless I accept it.
             </p>
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] sm:text-xs text-gray-500">
               <span className="inline-flex items-center gap-1">
@@ -285,8 +286,8 @@ export default function Home() {
 
               {pledgeError && <p className="mt-2 text-center text-sm text-coral-400">{pledgeError}</p>}
               <p className="mt-3 text-center text-xs text-gray-500">
-                You set the price. I build and own the software; you license it at your price. Next:
-                confirm your email and book a Zoom with me.
+                You set the price. I review every request — if I don&apos;t take yours on,
+                you&apos;re not charged. Next: confirm the details, then book a Zoom with me.
               </p>
             </div>
           </div>
@@ -349,6 +350,47 @@ export default function Home() {
                 </div>
                 <h3 className="mt-6 text-xl font-bold text-gray-900">{s.title}</h3>
                 <p className="mt-2 text-gray-600">{s.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Straight answers (objection-handling FAQ) */}
+      <section className="py-24 bg-white">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-pink-600 font-semibold tracking-wide uppercase">Straight Answers</p>
+            <h2 className="mt-2 text-4xl font-display tracking-wide text-gray-900 sm:text-5xl">
+              BEFORE YOU PAY
+            </h2>
+          </div>
+          <div className="mt-12 space-y-6">
+            {[
+              {
+                q: "Am I buying a product or access?",
+                a: "You're funding a fix for your specific problem. If I build it, you get access — a license — at the monthly price you set. I build and own the software.",
+              },
+              {
+                q: "Can you decline my request?",
+                a: "Yes. I review every submission and only take on problems I can genuinely solve well. If I decline, your first payment is refunded — you're never charged for a build I won't do.",
+              },
+              {
+                q: "What if you never ship?",
+                a: "Cancel anytime from Stripe. You're backing an active build, not a vague promise — and I work in public, so you can see progress.",
+              },
+              {
+                q: "Who owns the software and my data?",
+                a: "I build and own the software; you hold a license at your price. Your problem details are used to build and improve your tool — not sold.",
+              },
+              {
+                q: "Why this instead of a contractor or SaaS?",
+                a: "No hourly quotes, no shelf-ware you bend to fit. You name what solving your exact problem is worth — and only pay if I take it on.",
+              },
+            ].map((item) => (
+              <div key={item.q} className="rounded-2xl border border-gray-200 p-6">
+                <h3 className="text-lg font-bold text-gray-900">{item.q}</h3>
+                <p className="mt-2 text-gray-600">{item.a}</p>
               </div>
             ))}
           </div>

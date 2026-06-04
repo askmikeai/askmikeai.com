@@ -5,6 +5,13 @@ export const metadata: Metadata = {
   title: "About Mike - AskMikeAI",
   description:
     "Mike is a builder, educator, and member of the AI community who makes software that solves real problems.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About Mike — AskMikeAI",
+    description:
+      "Builder, educator, and AI-community member who ships software that solves real problems.",
+    url: "/about",
+  },
 };
 
 const pillars = [
@@ -192,7 +199,7 @@ export default function AboutPage() {
             Tell me your pain point and name what fixing it is worth. If it resonates, I&apos;ll build it.
           </p>
           <Link
-            href="/"
+            href="/pledge"
             className="mt-8 inline-block rounded-full bg-white px-10 py-4 text-lg font-semibold text-pink-700 shadow-xl hover:bg-gray-100 hover:scale-105 transition-all"
           >
             Back the Build

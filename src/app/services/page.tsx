@@ -5,6 +5,13 @@ export const metadata: Metadata = {
   title: "What I Build - AskMikeAI",
   description:
     "Mike builds AI-powered software that solves real, specific problems — priced by the people who have the problem.",
+  alternates: { canonical: "/services" },
+  openGraph: {
+    title: "What I Build — AskMikeAI",
+    description:
+      "Software, not slide decks. What Mike builds, what's a good fit, and how pricing works.",
+    url: "/services",
+  },
 };
 
 const things = [
@@ -153,6 +160,115 @@ export default function WhatIBuildPage() {
         </div>
       </section>
 
+      {/* Currently building */}
+      <section className="py-24 bg-gray-900">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-teal-400 font-semibold tracking-wide uppercase">Currently Building</p>
+            <h2 className="mt-2 text-4xl font-display tracking-wide text-white sm:text-5xl">
+              IN ACTIVE DEVELOPMENT
+            </h2>
+            <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+              The products I&apos;m shipping right now.
+            </p>
+          </div>
+          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
+            {[
+              { name: "NextHello.ai", href: "https://nexthello.ai", stage: "In active development" },
+              { name: "MergeRequest.ai", href: "https://mergerequest.ai", stage: "In active development" },
+            ].map((p) => (
+              <a
+                key={p.name}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-3xl border border-white/10 bg-white/5 p-8 transition-colors hover:bg-white/10"
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-bold text-white">{p.name}</h3>
+                  <span className="rounded-full bg-teal-500/15 px-3 py-1 text-xs font-medium text-teal-300">
+                    {p.stage}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-gray-400">{p.href.replace("https://", "")}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Good fit / bad fit */}
+      <section className="py-24 bg-white">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-pink-600 font-semibold tracking-wide uppercase">Is it a fit?</p>
+            <h2 className="mt-2 text-4xl font-display tracking-wide text-gray-900 sm:text-5xl">
+              WHAT I TAKE ON
+            </h2>
+          </div>
+          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="rounded-3xl border border-teal-200 bg-teal-50/50 p-8">
+              <h3 className="text-xl font-bold text-teal-800">Good fit</h3>
+              <ul className="mt-4 space-y-3 text-gray-700">
+                {[
+                  "A specific, recurring workflow that genuinely hurts",
+                  "You can name what it costs — hours, dollars, or stress",
+                  "It'd be worth a monthly price to make it disappear",
+                  "You're open to a quick call to get it right",
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2">
+                    <span className="mt-0.5 text-teal-600">✓</span> {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-3xl border border-gray-200 bg-gray-50 p-8">
+              <h3 className="text-xl font-bold text-gray-800">Not a fit</h3>
+              <ul className="mt-4 space-y-3 text-gray-600">
+                {[
+                  '"Build me the next billion-dollar app" with no specific pain',
+                  "A one-off throwaway script you'll never use again",
+                  "Something you need for free or at cost",
+                  "Heavily regulated/compliance-critical systems",
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2">
+                    <span className="mt-0.5 text-gray-400">✕</span> {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How a build goes */}
+      <section className="py-24 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-teal-600 font-semibold tracking-wide uppercase">The Process</p>
+            <h2 className="mt-2 text-4xl font-display tracking-wide text-gray-900 sm:text-5xl">
+              HOW A BUILD GOES
+            </h2>
+          </div>
+          <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-4">
+            {[
+              { step: "01", title: "Submit", description: "Describe the pain and name your price. You're not charged unless I accept." },
+              { step: "02", title: "Review", description: "I review within ~2 business days and confirm whether it's a fit." },
+              { step: "03", title: "Scope on a call", description: "We hop on a Zoom to sharpen the first version." },
+              { step: "04", title: "Ship & iterate", description: "I build it and you license it at your price — improved over time." },
+            ].map((phase) => (
+              <div key={phase.step} className="text-center group">
+                <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-pink-600 to-coral-600 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                  <span className="text-2xl font-display text-white">{phase.step}</span>
+                </div>
+                <h3 className="mt-6 text-xl font-bold text-gray-900">{phase.title}</h3>
+                <p className="mt-2 text-gray-600">{phase.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-pink-700 via-pink-800 to-purple-900"></div>
@@ -167,7 +283,7 @@ export default function WhatIBuildPage() {
             Maybe it&apos;s your problem. Describe your pain point and name your price.
           </p>
           <Link
-            href="/"
+            href="/pledge"
             className="mt-8 inline-block rounded-full bg-white px-10 py-4 text-lg font-semibold text-pink-700 shadow-xl hover:bg-gray-100 hover:scale-105 transition-all"
           >
             Back the Build
