@@ -3,11 +3,14 @@
   <rect width="1125" height="675" fill="#212121"/>
 
   <!-- contact -->
-  <text x="90" y="178" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="6" fill="#2dd4bf">LET&#39;S CONNECT</text>
-  <text x="90" y="258" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#ffffff">askmikeai@gmail.com</text>
-  <text x="90" y="326" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#ffffff">+1 (754) 295-9900</text>
-  <text x="90" y="394" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#2dd4bf">askmikeai.com</text>
-  <text x="90" y="474" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#9ca3af">Tell me a problem worth solving.</text>
+  <text x="90" y="158" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="6" fill="#2dd4bf">LET&#39;S CONNECT</text>
+  <text x="90" y="228" font-family="Arial, Helvetica, sans-serif" font-size="29" fill="#ffffff">askmikeai@gmail.com</text>
+  <text x="90" y="288" font-family="Arial, Helvetica, sans-serif" font-size="29" fill="#ffffff">+1 (754) 295-9900</text>
+  <text x="90" y="348" font-family="Arial, Helvetica, sans-serif" font-size="29" fill="#2dd4bf">askmikeai.com</text>
+
+  <!-- socials -->
+  <text x="90" y="436" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#ffffff">@askmikeai</text>
+  <text x="90" y="478" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#9ca3af">X &#183; YouTube &#183; Instagram &#183; TikTok</text>
 
   <!-- WhatsApp QR (vector) -->
   <rect x="726" y="150" width="320" height="320" rx="20" fill="#ffffff"/>
