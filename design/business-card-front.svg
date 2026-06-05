@@ -28,8 +28,8 @@
   <text x="84" y="652" font-size="84" font-weight="800" letter-spacing="-1" fill="#ffffff">Michael</text>
   <text x="84" y="742" font-size="84" font-weight="800" letter-spacing="-1" fill="#ffffff">Friedberg</text>
   <text x="86" y="800" font-size="36" font-weight="800" fill="#2dd4bf">Pain Point Finder</text>
-  <text x="86" y="848" font-size="28" fill="#9ca3af">Principal Software Engineer</text>
-  <text x="86" y="884" font-size="28" fill="#9ca3af">AI builder &amp; educator</text>
+  <text x="86" y="846" font-size="27" fill="#9ca3af">Principal Software Engineer</text>
+  <text x="86" y="882" font-size="24" fill="#9ca3af">AI builder &#183; educator &#183; content creator</text>
   <text x="86" y="948" font-size="26" font-weight="700" fill="url(#brand)">AI software that solves real problems</text>
   <circle cx="96" cy="1024" r="7" fill="url(#brand)"/>
   <text x="116" y="1036" font-size="34" font-weight="800" fill="#2dd4bf">askmikeai.com</text>
