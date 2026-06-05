@@ -9,7 +9,6 @@ function SuccessInner() {
   const sessionId = params.get("session_id");
   const [state, setState] = useState<"loading" | "sent" | "error">("loading");
   const [email, setEmail] = useState<string | null>(null);
-  const [devLink, setDevLink] = useState<string | null>(null);
 
   useEffect(() => {
     if (!sessionId) {
@@ -25,7 +24,6 @@ function SuccessInner() {
         const data = await r.json();
         if (!r.ok) throw new Error(data.error || "failed");
         setEmail(data.email ?? null);
-        if (data.verifyUrl) setDevLink(data.verifyUrl); // email not wired yet
         setState("sent");
       })
       .catch(() => setState("error"));
@@ -42,28 +40,26 @@ function SuccessInner() {
 
         {state === "loading" && (
           <>
-            <h1 className="text-2xl font-bold text-gray-900">Confirming your pledge…</h1>
-            <p className="mt-3 text-gray-600">One moment while we set things up.</p>
+            <h1 className="text-2xl font-bold text-gray-900">Saving your request…</h1>
+            <p className="mt-3 text-gray-600">One moment.</p>
           </>
         )}
 
         {state === "sent" && (
           <>
-            <h1 className="text-2xl font-bold text-gray-900">Thank you for backing the build.</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Request received — you&apos;re not charged yet.</h1>
             <p className="mt-3 text-gray-600">
-              We just sent a confirmation link{email ? ` to ${email}` : ""}. Open it to verify your
-              email and book your call with Mike.
+              Your card is saved securely{email ? ` (${email})` : ""}, but nothing has been charged.
+              I review every request, usually within <strong>2 business days</strong>. If I take yours
+              on, I&apos;ll set up your subscription — your first month is charged then — and we&apos;ll
+              book a call. If I don&apos;t, your card is never charged.
             </p>
-            {devLink && (
-              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-left">
-                <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide">
-                  Email not configured yet — dev link
-                </p>
-                <Link href={devLink} className="text-sm text-pink-600 break-all underline">
-                  {devLink}
-                </Link>
-              </div>
-            )}
+            <Link
+              href="/"
+              className="mt-6 inline-block rounded-full bg-gradient-to-r from-pink-600 to-coral-600 px-8 py-3 font-semibold text-white shadow-lg hover:scale-105 transition-all"
+            >
+              Back to home
+            </Link>
           </>
         )}
 
@@ -71,7 +67,8 @@ function SuccessInner() {
           <>
             <h1 className="text-2xl font-bold text-gray-900">We couldn&apos;t confirm that.</h1>
             <p className="mt-3 text-gray-600">
-              Your pledge may still have gone through. Reach out and we&apos;ll sort it out.
+              Your card may still have been saved (you have not been charged). Reach out and
+              I&apos;ll sort it out.
             </p>
             <Link href="/contact" className="mt-6 inline-block text-pink-600 font-semibold underline">
               Contact Mike

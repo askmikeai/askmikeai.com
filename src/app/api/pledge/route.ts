@@ -33,31 +33,19 @@ export async function POST(request: NextRequest) {
     const stripe = getStripe();
     const baseUrl = getBaseUrl();
 
+    // Create a Customer to hold the saved card. NOTHING is charged here — we use
+    // Checkout `setup` mode to save the card now, and only create the
+    // subscription (first charge) if/when Mike accepts the request.
+    const customer = await stripe.customers.create({
+      email: meta.email || undefined,
+      name: meta.name || undefined,
+      metadata: meta,
+    });
+
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      // The visitor sets the price — create an ad-hoc recurring price at checkout.
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: "usd",
-            recurring: { interval: "month" },
-            unit_amount: dollars * 100,
-            product_data: {
-              name: "AskMikeAI Founding License",
-              description:
-                "Back the build. Mike builds the software that solves your pain point; you license it at the price you set.",
-            },
-          },
-        },
-      ],
-      // Stripe collects + we later verify ownership of this email.
-      billing_address_collection: "auto",
-      ...(meta.email ? { customer_email: meta.email } : {}),
-      allow_promotion_codes: false,
-      subscription_data: {
-        metadata: meta,
-      },
+      mode: "setup",
+      currency: "usd", // required for setup mode with dynamic payment methods
+      customer: customer.id,
       metadata: meta,
       success_url: `${baseUrl}/pledge/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/?pledge=cancelled`,

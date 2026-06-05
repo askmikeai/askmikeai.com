@@ -208,19 +208,19 @@ export default function PledgePage() {
 
           {/* What happens after you pay — plain-language terms */}
           <div className="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-sm text-gray-700">
-            <p className="font-semibold text-gray-900">What happens after you pay</p>
+            <p className="font-semibold text-gray-900">What happens next</p>
             <ul className="mt-2 space-y-1.5">
               <li className="flex gap-2">
-                <span className="text-pink-600">•</span> You&apos;re backing a <strong>proposed</strong> build — not guaranteed custom software.
+                <span className="text-pink-600">•</span> Stripe securely saves your card now — <strong>you are not charged</strong>.
               </li>
               <li className="flex gap-2">
                 <span className="text-pink-600">•</span> I review your request within <strong>2 business days</strong>.
               </li>
               <li className="flex gap-2">
-                <span className="text-pink-600">•</span> If I accept it, you get access at your pledged monthly price.
+                <span className="text-pink-600">•</span> If I take it on, I set up your subscription and your <strong>first month is charged then</strong>.
               </li>
               <li className="flex gap-2">
-                <span className="text-pink-600">•</span> If I don&apos;t accept it, your first payment is <strong>refunded</strong>.
+                <span className="text-pink-600">•</span> If I don&apos;t take it on, your card is <strong>never charged</strong>.
               </li>
               <li className="flex gap-2">
                 <span className="text-pink-600">•</span> Cancel anytime from Stripe.
@@ -236,13 +236,13 @@ export default function PledgePage() {
             className="mt-6 w-full rounded-xl bg-gradient-to-r from-pink-600 to-coral-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg transition-all hover:scale-[1.01] hover:shadow-pink-600/40 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
           >
             {submitting
-              ? "Taking you to checkout…"
+              ? "Securing your card…"
               : overMax
               ? "Schedule a call with Mike"
-              : `Continue to secure checkout — $${Math.max(PLEDGE_MIN, Math.round(price))}/mo`}
+              : `Save my card — $${Math.max(PLEDGE_MIN, Math.round(price))}/mo if accepted`}
           </button>
           <p className="mt-3 text-center text-xs text-gray-500">
-            Secure payment by Stripe. You confirm your email and book a Zoom with Mike right after.
+            Stripe securely saves your card — no charge until I take your build on. Cancel anytime.
           </p>
         </div>
       </div>
