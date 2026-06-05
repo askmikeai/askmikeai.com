@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1125" height="675" viewBox="0 0 1125 675">
+  <!-- 3.5in x 2in business card @300dpi, with 0.125in bleed (trim = inner 1050x600). -->
+  <rect width="1125" height="675" fill="#212121"/>
+
+  <!-- contact -->
+  <text x="90" y="178" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="6" fill="#2dd4bf">LET&#39;S CONNECT</text>
+  <text x="90" y="258" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#ffffff">askmikeai@gmail.com</text>
+  <text x="90" y="326" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#ffffff">+1 (754) 295-9900</text>
+  <text x="90" y="394" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#2dd4bf">askmikeai.com</text>
+  <text x="90" y="474" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#9ca3af">Tell me a problem worth solving.</text>
+
+  <!-- WhatsApp QR (vector) -->
+  <rect x="726" y="150" width="320" height="320" rx="20" fill="#ffffff"/>
+  <svg x="746" y="170" width="280" height="280" viewBox="0 0 29 29" shape-rendering="crispEdges">
+    <path fill="#ffffff" d="M0 0h29v29H0z"/>
+    <path stroke="#1f2937" d="M2 2.5h7m1 0h1m1 0h1m3 0h1m3 0h7M2 3.5h1m5 0h1m1 0h5m1 0h1m1 0h1m1 0h1m5 0h1M2 4.5h1m1 0h3m1 0h1m1 0h1m1 0h5m3 0h1m1 0h3m1 0h1M2 5.5h1m1 0h3m1 0h1m4 0h1m1 0h1m1 0h2m1 0h1m1 0h3m1 0h1M2 6.5h1m1 0h3m1 0h1m1 0h1m5 0h1m3 0h1m1 0h3m1 0h1M2 7.5h1m5 0h1m2 0h4m1 0h3m1 0h1m5 0h1M2 8.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M13 9.5h1m1 0h1m2 0h1M2 10.5h1m2 0h8m1 0h1m1 0h1m1 0h2m2 0h1m1 0h3M2 11.5h3m1 0h2m1 0h1m1 0h4m2 0h2m2 0h5M6 12.5h5m1 0h3m1 0h2m1 0h3m1 0h1m2 0h1M2 13.5h1m4 0h1m3 0h1m2 0h1m3 0h1m1 0h2m1 0h4M6 14.5h1m1 0h2m2 0h1m1 0h4m1 0h2m5 0h1M2 15.5h1m1 0h2m1 0h1m2 0h3m2 0h2m5 0h1m2 0h1M2 16.5h2m2 0h5m1 0h4m1 0h1m1 0h1m2 0h5M2 17.5h1m2 0h1m6 0h2m2 0h2m3 0h1m1 0h2m1 0h1M2 18.5h1m1 0h1m1 0h1m1 0h2m1 0h2m3 0h1m1 0h5m1 0h2M10 19.5h1m1 0h4m2 0h1m3 0h1m1 0h2M2 20.5h7m1 0h2m1 0h1m4 0h1m1 0h1m1 0h1m3 0h1M2 21.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1M2 22.5h1m1 0h3m1 0h1m1 0h2m2 0h9m2 0h1M2 23.5h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h5m5 0h1M2 24.5h1m1 0h3m1 0h1m5 0h1m1 0h1m2 0h1m2 0h5M2 25.5h1m5 0h1m2 0h2m3 0h1m4 0h2m1 0h3M2 26.5h7m1 0h1m4 0h2m1 0h1m1 0h1m2 0h1m2 0h1"/>
+  </svg>
+  <text x="886" y="512" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#9ca3af" text-anchor="middle">Scan to WhatsApp me</text>
+</svg>

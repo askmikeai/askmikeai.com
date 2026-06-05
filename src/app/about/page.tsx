@@ -57,6 +57,12 @@ export default function AboutPage() {
                 consultant — I don&apos;t sell strategy by the hour. I make software that solves real
                 problems, and I let the people who have the problem decide what it&apos;s worth.
               </p>
+              <p className="mt-4 text-lg text-gray-400">
+                By day I&apos;m a <strong className="text-gray-200">Principal Software Engineer at a
+                Fortune&nbsp;100 enterprise-software company</strong>, where I build the AI harnesses my
+                org runs on and train engineers to use AI in production. AskMikeAI is my own independent
+                venture.
+              </p>
             </div>
             <div className="relative mx-auto lg:mx-0 shrink-0">
               <div className="absolute -inset-3 rounded-full bg-gradient-to-br from-pink-500/40 to-teal-500/30 blur-2xl"></div>

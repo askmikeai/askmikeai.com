@@ -118,6 +118,61 @@ export interface ConnectionRecord {
   source?: string | null;
 }
 
+let enterpriseReady = false;
+
+async function ensureEnterpriseLeadsTable(sql: NeonQueryFunction<false, false>) {
+  if (enterpriseReady) return;
+  await sql`
+    CREATE TABLE IF NOT EXISTS enterprise_leads (
+      id BIGSERIAL PRIMARY KEY,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      name TEXT,
+      work_email TEXT,
+      company TEXT,
+      role TEXT,
+      team_size TEXT,
+      use_case TEXT,
+      timeline TEXT,
+      notes TEXT
+    )
+  `;
+  enterpriseReady = true;
+}
+
+export interface EnterpriseLeadRecord {
+  name: string;
+  workEmail: string;
+  company: string;
+  role?: string | null;
+  teamSize?: string | null;
+  useCase?: string | null;
+  timeline?: string | null;
+  notes?: string | null;
+}
+
+/** Capture an enterprise inquiry (sales-assisted). Best-effort. */
+export async function recordEnterpriseLead(p: EnterpriseLeadRecord): Promise<boolean> {
+  const sql = getDb();
+  if (!sql) {
+    console.warn("recordEnterpriseLead: no database configured (NEON_US_DSN unset)");
+    return false;
+  }
+  try {
+    await ensureEnterpriseLeadsTable(sql);
+    await sql`
+      INSERT INTO enterprise_leads (name, work_email, company, role, team_size, use_case, timeline, notes)
+      VALUES (
+        ${p.name}, ${p.workEmail}, ${p.company}, ${p.role ?? null}, ${p.teamSize ?? null},
+        ${p.useCase ?? null}, ${p.timeline ?? null}, ${p.notes ?? null}
+      )
+    `;
+    return true;
+  } catch (error) {
+    console.error("recordEnterpriseLead failed:", error);
+    return false;
+  }
+}
+
 /** Add a person to the personal CRM (connections table). Best-effort. */
 export async function recordConnection(p: ConnectionRecord): Promise<boolean> {
   const sql = getDb();

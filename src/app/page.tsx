@@ -294,6 +294,21 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Segment: solo/SMB vs teams */}
+      <section className="bg-[#1a1a1a] py-6">
+        <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-3 px-4 text-center sm:flex-row">
+          <p className="text-sm text-gray-400">
+            Buying for a team — with procurement, security review, and annual licensing?
+          </p>
+          <Link
+            href="/enterprise"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-teal-500/40 bg-teal-500/10 px-4 py-2 text-sm font-semibold text-teal-300 transition-colors hover:bg-teal-500/20"
+          >
+            AskMikeAI for Enterprise →
+          </Link>
+        </div>
+      </section>
+
       {/* What I do - pillars */}
       <section className="py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
