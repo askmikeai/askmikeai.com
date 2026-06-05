@@ -1,6 +1,10 @@
 # Business card — how to order
 
-Files: `business-card-front.svg`, `business-card-back.svg` (vector).
+**Ready to upload:** `business-card-front.pdf` and `business-card-back.pdf` —
+print-ready vector PDFs at 3.75" × 2.25" (3.5×2 trim + 0.125" bleed), fonts
+embedded. Most printers (Moo / Vistaprint / GotPrint) accept these directly.
+
+Source (editable): `business-card-front.svg`, `business-card-back.svg`.
 
 Specs:
 - Final card: **3.5" × 2"** (US standard).
