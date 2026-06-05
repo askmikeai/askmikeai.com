@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" font-family="Arial, Helvetica, sans-serif"><defs><linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#db2777"/><stop offset="0.5" stop-color="#fb7185"/><stop offset="1" stop-color="#14b8a6"/></linearGradient><radialGradient id="gp" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fb7185" stop-opacity="0.5"/><stop offset="1" stop-color="#fb7185" stop-opacity="0"/></radialGradient><radialGradient id="gt" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#14b8a6" stop-opacity="0.45"/><stop offset="1" stop-color="#14b8a6" stop-opacity="0"/></radialGradient></defs>
+<rect width="1920" height="1080" fill="#131316"/>
+<circle cx="1700" cy="120" r="640" fill="url(#gp)"/><circle cx="180" cy="1020" r="560" fill="url(#gt)"/>
+<g transform="translate(1180,180) scale(52)" opacity="0.10"><path fill="url(#brand)" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></g>
+<rect x="0" y="0" width="22" height="1080" fill="url(#brand)"/><g transform="translate(80,70)"><rect width="92" height="92" rx="22" fill="url(#brand)"/><text x="46" y="66" font-size="60" font-weight="700" fill="#ffffff" text-anchor="middle">M</text><text x="112" y="36" font-size="20" letter-spacing="6" fill="#9ca3af">ASK</text><text x="112" y="76" font-size="40" font-weight="700" fill="#ffffff">MIKE<tspan fill="#2dd4bf">AI</tspan></text></g>
+<rect x="160" y="470" width="120" height="12" rx="6" fill="url(#brand)"/>
+<text x="158" y="610" font-size="150" font-weight="800" letter-spacing="-3" fill="#ffffff">VIDEO TITLE</text>
+<text x="160" y="740" font-size="150" font-weight="800" letter-spacing="-3" fill="url(#brand)">GOES HERE</text>
+<text x="162" y="830" font-size="44" fill="#9ca3af">A short subtitle / what this video is about</text>
+<text x="160" y="1000" font-size="34" fill="#6b7280">askmikeai.com · @askmikeai</text>
+</svg>

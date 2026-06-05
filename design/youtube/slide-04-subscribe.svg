@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" font-family="Arial, Helvetica, sans-serif"><defs><linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#db2777"/><stop offset="0.5" stop-color="#fb7185"/><stop offset="1" stop-color="#14b8a6"/></linearGradient><radialGradient id="gp" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fb7185" stop-opacity="0.5"/><stop offset="1" stop-color="#fb7185" stop-opacity="0"/></radialGradient><radialGradient id="gt" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#14b8a6" stop-opacity="0.45"/><stop offset="1" stop-color="#14b8a6" stop-opacity="0"/></radialGradient></defs>
+<rect width="1920" height="1080" fill="#131316"/>
+<circle cx="1700" cy="120" r="600" fill="url(#gp)"/><circle cx="200" cy="1000" r="520" fill="url(#gt)"/>
+<rect x="0" y="0" width="22" height="1080" fill="url(#brand)"/><g transform="translate(80,70)"><rect width="92" height="92" rx="22" fill="url(#brand)"/><text x="46" y="66" font-size="60" font-weight="700" fill="#ffffff" text-anchor="middle">M</text><text x="112" y="36" font-size="20" letter-spacing="6" fill="#9ca3af">ASK</text><text x="112" y="76" font-size="40" font-weight="700" fill="#ffffff">MIKE<tspan fill="#2dd4bf">AI</tspan></text></g>
+<text x="960" y="470" font-size="110" font-weight="800" letter-spacing="-2" fill="#ffffff" text-anchor="middle">ENJOYING THIS?</text>
+<rect x="700" y="560" width="520" height="130" rx="65" fill="url(#brand)"/>
+<text x="960" y="648" font-size="58" font-weight="800" fill="#0b0b0d" text-anchor="middle">SUBSCRIBE</text>
+<text x="960" y="790" font-size="40" fill="#9ca3af" text-anchor="middle">New AI builds every week · @askmikeai</text>
+</svg>

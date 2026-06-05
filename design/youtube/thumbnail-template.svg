@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" font-family="Arial, Helvetica, sans-serif">
+  <!-- YouTube thumbnail template (1280x720). Edit the TITLE text + drop a photo
+       into the PHOTO frame. Layers are separate <g>/<text> so they're editable
+       in Figma / Illustrator / Photoshop (import SVG). -->
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#db2777"/><stop offset="0.5" stop-color="#fb7185"/><stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+    <radialGradient id="gp" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fb7185" stop-opacity="0.5"/><stop offset="1" stop-color="#fb7185" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gt" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#14b8a6" stop-opacity="0.45"/><stop offset="1" stop-color="#14b8a6" stop-opacity="0"/></radialGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="1280" height="720" fill="#131316"/>
+  <circle cx="1120" cy="80" r="420" fill="url(#gp)"/>
+  <circle cx="120" cy="700" r="360" fill="url(#gt)"/>
+  <g transform="translate(720,140) scale(34)" opacity="0.10"><path fill="url(#brand)" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></g>
+  <rect x="0" y="0" width="20" height="720" fill="url(#brand)"/>
+
+  <!-- logo lockup -->
+  <g transform="translate(70,60)">
+    <rect width="76" height="76" rx="18" fill="url(#brand)"/>
+    <text x="38" y="55" font-size="50" font-weight="700" fill="#ffffff" text-anchor="middle">M</text>
+    <text x="92" y="30" font-size="16" letter-spacing="5" fill="#9ca3af">ASK</text>
+    <text x="92" y="62" font-size="34" font-weight="700" fill="#ffffff">MIKE<tspan fill="#2dd4bf">AI</tspan></text>
+  </g>
+
+  <!-- ===== EDIT: TITLE (3 lines, huge) ===== -->
+  <g font-weight="800" letter-spacing="-2">
+    <text x="70" y="330" font-size="118" fill="#ffffff">THE AI TOOL</text>
+    <text x="70" y="446" font-size="118" fill="#ffffff">THAT <tspan fill="url(#brand)">SAVES</tspan></text>
+    <text x="70" y="562" font-size="118" fill="#ffffff">YOU HOURS</text>
+  </g>
+  <!-- accent pill -->
+  <rect x="74" y="600" width="300" height="56" rx="28" fill="url(#brand)"/>
+  <text x="224" y="638" font-size="30" font-weight="700" fill="#0b0b0d" text-anchor="middle">WATCH NOW</text>
+
+  <!-- ===== PHOTO FRAME (drop your headshot here) ===== -->
+  <g transform="translate(880,160)">
+    <rect x="-12" y="-12" width="384" height="424" rx="36" fill="url(#brand)"/>
+    <rect width="360" height="400" rx="28" fill="#1f1f24"/>
+    <rect width="360" height="400" rx="28" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="3" stroke-dasharray="14 12"/>
+    <text x="180" y="195" font-size="26" fill="#9ca3af" text-anchor="middle">DROP YOUR</text>
+    <text x="180" y="232" font-size="26" font-weight="700" fill="#e5e7eb" text-anchor="middle">PHOTO HERE</text>
+  </g>
+
+  <text x="1210" y="690" font-size="24" fill="#9ca3af" text-anchor="end">@askmikeai</text>
+</svg>
