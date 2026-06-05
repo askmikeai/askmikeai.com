@@ -1,47 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1125" height="675" viewBox="0 0 1125 675">
-  <!-- v2 · 3.5in x 2in @300dpi + 0.125in bleed (trim = inner 1050x600). -->
+<svg xmlns="http://www.w3.org/2000/svg" width="675" height="1125" viewBox="0 0 675 1125" font-family="Arial, Helvetica, sans-serif">
+  <!-- VERTICAL · 2in x 3.5in @300dpi + 0.125in bleed (trim = inner 600x1050). -->
   <defs>
     <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#db2777"/>
-      <stop offset="0.5" stop-color="#fb7185"/>
-      <stop offset="1" stop-color="#14b8a6"/>
+      <stop offset="0" stop-color="#db2777"/><stop offset="0.5" stop-color="#fb7185"/><stop offset="1" stop-color="#14b8a6"/>
     </linearGradient>
-    <radialGradient id="g1" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="#fb7185" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#fb7185" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="g2" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="#14b8a6" stop-opacity="0.42"/>
-      <stop offset="1" stop-color="#14b8a6" stop-opacity="0"/>
-    </radialGradient>
+    <radialGradient id="g1" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fb7185" stop-opacity="0.5"/><stop offset="1" stop-color="#fb7185" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g2" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#14b8a6" stop-opacity="0.42"/><stop offset="1" stop-color="#14b8a6" stop-opacity="0"/></radialGradient>
   </defs>
 
-  <rect width="1125" height="675" fill="#131316"/>
-  <!-- mesh depth -->
-  <circle cx="1040" cy="30" r="360" fill="url(#g1)"/>
-  <circle cx="120" cy="700" r="320" fill="url(#g2)"/>
-  <!-- sparkle signature bleeding off the right edge -->
-  <g transform="translate(560,-20) scale(26)" opacity="0.10">
-    <path fill="url(#brand)" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
-  </g>
-  <!-- small accent sparkle -->
-  <g transform="translate(560,120) scale(2.1)" opacity="0.7">
-    <path fill="#2dd4bf" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
-  </g>
+  <rect width="675" height="1125" fill="#131316"/>
+  <circle cx="640" cy="130" r="380" fill="url(#g1)"/>
+  <circle cx="40" cy="1040" r="340" fill="url(#g2)"/>
+  <!-- sparkle signature -->
+  <g transform="translate(330,60) scale(26)" opacity="0.10"><path fill="url(#brand)" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></g>
+  <g transform="translate(470,470) scale(1.9)" opacity="0.7"><path fill="#2dd4bf" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></g>
 
-  <!-- gradient spine (bleeds off left edge) -->
-  <rect x="0" y="0" width="16" height="675" fill="url(#brand)"/>
+  <!-- spine (bleeds off left edge) -->
+  <rect x="0" y="0" width="16" height="1125" fill="url(#brand)"/>
 
   <!-- brand mark -->
-  <rect x="110" y="84" width="96" height="96" rx="22" fill="url(#brand)"/>
-  <text x="158" y="153" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700" fill="#ffffff" text-anchor="middle">M</text>
-  <text x="228" y="118" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="6" fill="#9ca3af">ASK</text>
-  <text x="228" y="162" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700" fill="#ffffff">MIKE<tspan fill="#2dd4bf">AI</tspan></text>
+  <rect x="58" y="80" width="100" height="100" rx="24" fill="url(#brand)"/>
+  <text x="108" y="153" font-size="66" font-weight="700" fill="#ffffff" text-anchor="middle">M</text>
+  <text x="182" y="118" font-size="22" letter-spacing="6" fill="#9ca3af">ASK</text>
+  <text x="182" y="164" font-size="44" font-weight="700" fill="#ffffff">MIKE<tspan fill="#2dd4bf">AI</tspan></text>
 
   <!-- name block -->
-  <rect x="112" y="338" width="72" height="8" rx="4" fill="url(#brand)"/>
-  <text x="110" y="410" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700" fill="#ffffff" letter-spacing="-1">Michael Friedberg</text>
-  <text x="112" y="458" font-family="Arial, Helvetica, sans-serif" font-size="27" fill="#9ca3af">Principal Software Engineer &#183; AI builder &amp; educator</text>
-  <text x="112" y="526" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="url(#brand)">AI software that solves real problems</text>
-  <text x="112" y="600" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#6b7280">askmikeai.com</text>
+  <rect x="60" y="608" width="78" height="9" rx="4.5" fill="url(#brand)"/>
+  <text x="58" y="704" font-size="74" font-weight="800" letter-spacing="-1" fill="#ffffff">Michael</text>
+  <text x="58" y="788" font-size="74" font-weight="800" letter-spacing="-1" fill="#ffffff">Friedberg</text>
+  <text x="60" y="848" font-size="25" fill="#9ca3af">Principal Software Engineer</text>
+  <text x="60" y="884" font-size="25" fill="#9ca3af">AI builder &amp; educator</text>
+  <text x="60" y="956" font-size="26" font-weight="700" fill="url(#brand)">AI software that solves real problems</text>
+  <text x="60" y="1056" font-size="26" fill="#6b7280">askmikeai.com</text>
 </svg>
