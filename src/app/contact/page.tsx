@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import CalendlyEmbed from "@/components/CalendlyEmbed";
+import Link from "next/link";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +13,24 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [booking, setBooking] = useState(false);
+  const [bookError, setBookError] = useState<string | null>(null);
+
+  const startBooking = async () => {
+    if (booking) return;
+    setBooking(true);
+    setBookError(null);
+    try {
+      const res = await fetch("/api/book", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || "Could not start booking.");
+      window.location.href = data.url;
+    } catch (e) {
+      setBookError(e instanceof Error ? e.message : "Something went wrong.");
+      setBooking(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -268,12 +286,39 @@ export default function ContactPage() {
               GRAB 30 MINUTES WITH MIKE
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Prefer to talk it through? Book a 30-minute Zoom and tell me about your pain point.
+              My time is limited, so I keep the calendar for serious conversations.
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            <CalendlyEmbed />
+          <div className="mx-auto max-w-xl rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-lg">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-ocean-600">
+              <svg className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Book a 30-minute Zoom</h3>
+            <p className="mt-2 text-gray-600">
+              Booking takes a <strong>$50 donation</strong> — and it goes{" "}
+              <strong>in full to a local AI community</strong>, not to me. It&apos;s how I keep the
+              calendar for people who are serious.
+            </p>
+            <button
+              onClick={startBooking}
+              disabled={booking}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-teal-600 to-ocean-600 px-8 py-4 text-lg font-semibold text-white shadow-xl transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+            >
+              {booking ? "Taking you to checkout…" : "Donate $50 & book"}
+            </button>
+            {bookError && <p className="mt-3 text-sm text-coral-600">{bookError}</p>}
+            <p className="mt-3 text-xs text-gray-400">Secured by Stripe. You pick your time right after.</p>
+
+            <div className="mt-6 border-t border-gray-100 pt-5 text-sm text-gray-600">
+              Want your money to go toward an actual solution instead? It can cover the{" "}
+              <strong>first month of a build</strong>.{" "}
+              <Link href="/pledge" className="font-semibold text-pink-600 hover:text-pink-700">
+                Back the build →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
