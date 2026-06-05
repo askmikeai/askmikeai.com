@@ -30,6 +30,7 @@
   <text x="86" y="800" font-size="36" font-weight="800" fill="#2dd4bf">Pain Point Finder</text>
   <text x="86" y="848" font-size="28" fill="#9ca3af">Principal Software Engineer</text>
   <text x="86" y="884" font-size="28" fill="#9ca3af">AI builder &amp; educator</text>
-  <text x="86" y="952" font-size="26" font-weight="700" fill="url(#brand)">AI software that solves real problems</text>
-  <text x="86" y="1032" font-size="28" fill="#6b7280">askmikeai.com</text>
+  <text x="86" y="948" font-size="26" font-weight="700" fill="url(#brand)">AI software that solves real problems</text>
+  <circle cx="96" cy="1024" r="7" fill="url(#brand)"/>
+  <text x="116" y="1036" font-size="34" font-weight="800" fill="#2dd4bf">askmikeai.com</text>
 </svg>
