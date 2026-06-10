@@ -130,14 +130,15 @@ export default function AboutPage() {
               WHAT I&apos;M SHIPPING NOW
             </h2>
             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-              Two products in active development right now.
+              Three products in active development right now.
             </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
+          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
             {[
               { name: "NextHello.ai", href: "https://nexthello.ai" },
               { name: "MergeRequest.ai", href: "https://mergerequest.ai" },
+              { name: "AI Studio", href: "https://tryaistud.io" },
             ].map((product) => (
               <a
                 key={product.name}
