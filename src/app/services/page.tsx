@@ -176,7 +176,7 @@ export default function WhatIBuildPage() {
             {[
               { name: "NextHello.ai", href: "https://nexthello.ai", stage: "In active development" },
               { name: "MergeRequest.ai", href: "https://mergerequest.ai", stage: "In active development" },
-              { name: "AI Studio", href: "https://tryaistud.io", stage: "In active development" },
+              { name: "AI Stud", href: "https://tryaistud.io", stage: "In active development" },
             ].map((p) => (
               <a
                 key={p.name}

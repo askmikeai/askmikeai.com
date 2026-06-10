@@ -138,7 +138,7 @@ export default function AboutPage() {
             {[
               { name: "NextHello.ai", href: "https://nexthello.ai" },
               { name: "MergeRequest.ai", href: "https://mergerequest.ai" },
-              { name: "AI Studio", href: "https://tryaistud.io" },
+              { name: "AI Stud", href: "https://tryaistud.io" },
             ].map((product) => (
               <a
                 key={product.name}
